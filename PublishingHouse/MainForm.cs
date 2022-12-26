@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PublishingHouse
 {
@@ -62,7 +63,7 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Person.Address_, Person.Address_);
                     dataGridView.Columns.Add(Person.Phone_, Person.Phone_);
                     foreach (var item in Database.persons)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToData(item.Name), Converter.StringToData(item.Address), Converter.StringToData(item.Phone));
+                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address), Converter.StringToDataBox(item.Phone));
                     break;
 
                 case Table.PublishingOrder:
@@ -86,7 +87,7 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Publication.Size_, Publication.Size_);
                     dataGridView.Columns.Add(Publication.PrintingCount_, Publication.PrintingCount_);
                     foreach (var item in Database.publications)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToData(item.Name), Converter.StringToData(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
+                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
                     break;
 
                 case Table.Entity:
@@ -94,14 +95,14 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Entity.Id_, Entity.Id_);
                     dataGridView.Columns.Add(Entity.Name_, Entity.Name_);
                     foreach (var item in Database.entities)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToData(item.Name));
+                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name));
                     break;
 
                 case Table.PublicationType:
                     header.Text = "Publication Type";
                     dataGridView.Columns.Add(PublicationType.Type_, PublicationType.Type_);
                     foreach (var item in Database.publicationTypes)
-                        dataGridView.Rows.Add(Converter.StringToData(item.Type));
+                        dataGridView.Rows.Add(Converter.StringToDataBox(item.Type));
                     break;
 
                 case Table.Login:
@@ -110,7 +111,7 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Login.Username_, Login.Username_);
                     dataGridView.Columns.Add(Login.Password_, Login.Password_);
                     foreach (var item in Database.logins)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToData(item.Username), Converter.StringToData(item.Password));
+                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Username), Converter.StringToDataBox(item.Password));
                     break;
 
                 case Table.Author:
@@ -118,7 +119,7 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Author.Id_, Author.Id_);
                     dataGridView.Columns.Add(Author.AdditionalInfo_, Author.AdditionalInfo_);
                     foreach (var item in Database.authors)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToData(item.AdditionalInfo));
+                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.AdditionalInfo));
                     break;
 
                 case Table.Authorship:
@@ -134,7 +135,7 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(PrintingHouse.Name_, PrintingHouse.Name_);
                     dataGridView.Columns.Add(PrintingHouse.Address_, PrintingHouse.Address_);
                     foreach (var item in Database.printingHouses)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToData(item.Name), Converter.StringToData(item.Address));
+                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address));
                     break;
 
                 case Table.Representative:
@@ -242,56 +243,100 @@ namespace PublishingHouse
             switch (Session.Table)
             {
                 case Table.Person:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Id_].Value = Converter.StringToData(textBox_Person_ID.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Name_].Value = Converter.StringToData(textBox_Person_Name.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Address_].Value = Converter.StringToData(richTextBox_Person_Address.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Phone_].Value = Converter.StringToData(textBox_Person_Phone.Text);
+                    Person person = new Person();
+                    person.Id = Converter.StringToInt(textBox_Person_ID.Text);
+                    person.Name = textBox_Person_Name.Text;
+                    person.Address = richTextBox_Person_Address.Text;
+                    person.Phone = textBox_Person_Phone.Text;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Id_].Value = Converter.StringToDataBox(textBox_Person_ID.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Name_].Value = Converter.StringToDataBox(textBox_Person_Name.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Address_].Value = Converter.StringToDataBox(richTextBox_Person_Address.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Phone_].Value = Converter.StringToDataBox(textBox_Person_Phone.Text);
+                    Database.SaveChanges(Database.persons[dataGridViewMain.SelectedCells[0].RowIndex], person);
                     break;
                 case Table.PublishingOrder:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value = Converter.StringToData(textBox_Order_ID.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPrintingHouse_].Value = Converter.StringToData(comboBox_Order_IDPH.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.OrderStatus_].Value = Converter.StringToData(comboBox_Order_Status.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPublication_].Value = Converter.StringToData(comboBox_Order_IDPublication.SelectedItem?.ToString());
+                    PublishingOrder order = new PublishingOrder();
+                    order.Id = Converter.StringToInt(textBox_Order_ID.Text);
+                    order.IdPublication = Converter.StringToInt(comboBox_Order_IDPH.SelectedItem?.ToString());
+                    order.Status = OrderStatusHelper.StringToEnum(comboBox_Order_Status.SelectedItem?.ToString());
+                    order.IdPublication = Converter.StringToInt(comboBox_Order_IDPublication.SelectedItem?.ToString());
+                    order.DateOrder = dateTimePicker_Order_DateOrder.Value;
+                    order.DateCompliting = dateTimePicker_Order_DateComp.Value;
+                    order.IdRepresentative = Converter.StringToInt(comboBox_Order_IDRepres.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value = Converter.StringToDataBox(textBox_Order_ID.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPrintingHouse_].Value = Converter.StringToDataBox(comboBox_Order_IDPH.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.OrderStatus_].Value = Converter.StringToDataBox(comboBox_Order_Status.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPublication_].Value = Converter.StringToDataBox(comboBox_Order_IDPublication.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateOrder_].Value = dateTimePicker_Order_DateOrder.Value.ToString("dd.MM.yyyy");
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateCompliting_].Value = dateTimePicker_Order_DateComp.Value.ToString("dd.MM.yyyy");
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdRepresentative_].Value = Converter.StringToData(comboBox_Order_IDRepres.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdRepresentative_].Value = Converter.StringToDataBox(comboBox_Order_IDRepres.SelectedItem?.ToString());
+                    Database.SaveChanges(Database.publishingOrders[dataGridViewMain.SelectedCells[0].RowIndex], order);
                     break;
                 case Table.Publication:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value = Converter.StringToData(textBox_Publication_ID.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Name_].Value = Converter.StringToData(textBox_Publication_Name.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Type_].Value = Converter.StringToData(comboBox_Publication_Type.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Size_].Value = Converter.StringToData(textBox_Publication_Size.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.PrintingCount_].Value = Converter.StringToData(textBox_Publication_PrintingCount.Text);
+                    Publication publication = new Publication();
+                    publication.Id = Converter.StringToInt(textBox_Publication_ID.Text);
+                    publication.Name = textBox_Publication_Name.Text;
+                    publication.Type = comboBox_Publication_Type.SelectedItem?.ToString();
+                    publication.Size = Converter.StringToInt(textBox_Publication_Size.Text);
+                    publication.PrintingCount = Converter.StringToInt(textBox_Publication_PrintingCount.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value = Converter.StringToDataBox(textBox_Publication_ID.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Name_].Value = Converter.StringToDataBox(textBox_Publication_Name.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Type_].Value = Converter.StringToDataBox(comboBox_Publication_Type.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Size_].Value = Converter.StringToDataBox(textBox_Publication_Size.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.PrintingCount_].Value = Converter.StringToDataBox(textBox_Publication_PrintingCount.Text);
+                    Database.SaveChanges(Database.publications[dataGridViewMain.SelectedCells[0].RowIndex], publication);
                     break;
                 case Table.Author:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value = Converter.StringToData(comboBox_Author_ID.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.AdditionalInfo_].Value = Converter.StringToData(richTextBox_Author_Info.Text);
+                    Author author = new Author();
+                    author.Id = Converter.StringToInt(comboBox_Author_ID.SelectedItem?.ToString());
+                    author.AdditionalInfo = richTextBox_Author_Info.Text;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value = Converter.StringToDataBox(comboBox_Author_ID.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.AdditionalInfo_].Value = Converter.StringToDataBox(richTextBox_Author_Info.Text);
+                    Database.SaveChanges(Database.authors[dataGridViewMain.SelectedCells[0].RowIndex], author);
                     break;
                 case Table.Authorship:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value = Converter.StringToData(comboBox_Authorship_IDAuthor.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value = Converter.StringToData(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
+                    Authorship authorship = new Authorship();
+                    authorship.IdAuthor = Converter.StringToInt(comboBox_Authorship_IDAuthor.SelectedItem?.ToString());
+                    authorship.IdPublication = Converter.StringToInt(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value = Converter.StringToDataBox(comboBox_Authorship_IDAuthor.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value = Converter.StringToDataBox(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
                     break;
                 case Table.Entity:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value = Converter.StringToData(textBox_Entity_ID.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Name_].Value = Converter.StringToData(textBox_Entity_Name.Text);
+                    Entity entity = new Entity();
+                    entity.Id = int.Parse(textBox_Entity_ID.Text);
+                    entity.Name = textBox_Entity_Name.Text;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value = Converter.StringToDataBox(textBox_Entity_ID.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Name_].Value = Converter.StringToDataBox(textBox_Entity_Name.Text);
+                    Database.SaveChanges(Database.entities[dataGridViewMain.SelectedCells[0].RowIndex], entity);
                     break;
                 case Table.PublicationType:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value = Converter.StringToData(textBoxPublicationType.Text);
+                    PublicationType publicationType = new PublicationType();
+                    publicationType.Type = textBoxPublicationType.Text;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value = Converter.StringToDataBox(textBoxPublicationType.Text);
+                    Database.SaveChanges(Database.publicationTypes[dataGridViewMain.SelectedCells[0].RowIndex], publicationType);
                     break;
                 case Table.PrintingHouse:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value = Converter.StringToData(textBox_PH_ID.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Name_].Value = Converter.StringToData(textBox_PH_Name.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Address_].Value = Converter.StringToData(richTextBox_PH_Address.Text);
+                    PrintingHouse printingHouse = new PrintingHouse();
+                    printingHouse.Id = Converter.StringToInt(textBox_PH_ID.Text);
+                    printingHouse.Name = textBox_PH_Name.Text;
+                    printingHouse.Address = richTextBox_PH_Address.Text;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value = Converter.StringToDataBox(textBox_PH_ID.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Name_].Value = Converter.StringToDataBox(textBox_PH_Name.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Address_].Value = Converter.StringToDataBox(richTextBox_PH_Address.Text);
+                    Database.SaveChanges(Database.printingHouses[dataGridViewMain.SelectedCells[0].RowIndex], printingHouse);
                     break;
                 case Table.Login:
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value = Converter.StringToData(comboBox_Login_IDPH.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Username_].Value = Converter.StringToData(textBox_Login_Username.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Password_].Value = Converter.StringToData(textBox_Login_Password.Text);
+                    Login login = new Login();
+                    login.Id = Converter.StringToInt(comboBox_Login_IDPH.SelectedItem?.ToString());
+                    login.Username = textBox_Login_Username.Text;
+                    login.Password = textBox_Login_Password.Text;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value = Converter.StringToDataBox(comboBox_Login_IDPH.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Username_].Value = Converter.StringToDataBox(textBox_Login_Username.Text);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Password_].Value = Converter.StringToDataBox(textBox_Login_Password.Text);
+                    Database.SaveChanges(Database.logins[dataGridViewMain.SelectedCells[0].RowIndex], login);
                     break;
                     //TODO: add representative
             }
-
-            Database.SaveChangesInLocal(dataGridViewMain);
             buttonSaveChanges.Enabled = false;
         }   
 

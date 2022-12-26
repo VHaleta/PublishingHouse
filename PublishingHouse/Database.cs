@@ -14,7 +14,6 @@ namespace PublishingHouse
     public static class Database
     {
         private static SqlConnection connection;
-        private static SqlCommand command;
         public static List<Person> persons = new List<Person>();
         public static List<Publication> publications = new List<Publication>();
         public static List<Login> logins = new List<Login>();
@@ -33,7 +32,7 @@ namespace PublishingHouse
                 connection.Open();
 
                 string query = "select * from Login";
-                command = new SqlCommand(query, connection);
+                SqlCommand command = new SqlCommand(query, connection);
                 SqlDataReader rdr = command.ExecuteReader();
                 if (rdr.HasRows)
                     while (rdr.Read())
@@ -154,7 +153,7 @@ namespace PublishingHouse
                         publishingOrder.IdPublication = (!String.IsNullOrEmpty(rdr[PublishingOrder.IdPublication_].ToString())) ? int.Parse(rdr[PublishingOrder.IdPublication_].ToString()) : 0;
                         publishingOrder.IdPrintingHouse = (!String.IsNullOrEmpty(rdr[PublishingOrder.IdPrintingHouse_].ToString())) ? int.Parse(rdr[PublishingOrder.IdPrintingHouse_].ToString()) : 0;
                         publishingOrder.IdRepresentative = (!String.IsNullOrEmpty(rdr[PublishingOrder.IdRepresentative_].ToString())) ? int.Parse(rdr[PublishingOrder.IdRepresentative_].ToString()) : 0;
-                        publishingOrder.DateOrder = (!String.IsNullOrEmpty(rdr[PublishingOrder.DateOrder_].ToString())) ? DateTime.Parse (rdr[PublishingOrder.DateOrder_].ToString()) : new DateTime();
+                        publishingOrder.DateOrder = (!String.IsNullOrEmpty(rdr[PublishingOrder.DateOrder_].ToString())) ? DateTime.Parse(rdr[PublishingOrder.DateOrder_].ToString()) : new DateTime();
                         publishingOrder.DateCompliting = (!String.IsNullOrEmpty(rdr[PublishingOrder.DateCompliting_].ToString())) ? DateTime.Parse(rdr[PublishingOrder.DateCompliting_].ToString()) : new DateTime();
                         publishingOrder.Status = (!String.IsNullOrEmpty(rdr[PublishingOrder.OrderStatus_].ToString())) ? OrderStatusHelper.StringToEnum(rdr[PublishingOrder.OrderStatus_].ToString()) : OrderStatus.Unknown;
                         publishingOrders.Add(publishingOrder);
@@ -175,143 +174,179 @@ namespace PublishingHouse
                     }
                 rdr.Close();
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 MessageBox.Show("Error while loading database\n" + e.ToString());
             }
         }
 
-        public static void SaveChangesInLocal(DataGridView dataGridView)
+        public static void SaveChanges(object old, object update)
+        {
+            if (old.GetType() == typeof(Person))
+            {
+                Person t = (Person)update;
+                int index = persons.IndexOf((Person)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE Person " +
+                    $"SET {Person.Id_} = {Converter.IntToString(t.Id)}, " +
+                    $"{Person.Name_} = {Converter.StringToDatabase(t.Name)}, " +
+                    $"{Person.Address_} = {Converter.StringToDatabase(t.Address)}, " +
+                    $"{Person.Phone_} = {Converter.StringToDatabase(t.Phone)} " +
+                    $"WHERE {Person.Id_} = {Converter.IntToString(persons[index].Id)}");
+                persons[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(Entity))
+            {
+                Entity t = (Entity)update;
+                int index = entities.IndexOf((Entity)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE Entity " +
+                    $"SET {Entity.Id_} = {Converter.IntToString(t.Id)}, " +
+                    $"{Entity.Name_} = {Converter.StringToDatabase(t.Name)} " +
+                    $"WHERE {Entity.Id_} = {Converter.IntToString(entities[index].Id)}");
+                entities[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(Publication))
+            {
+                Publication t = (Publication)update;
+                int index = publications.IndexOf((Publication)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE Publication " +
+                    $"SET {Publication.Id_} = {Converter.IntToString(t.Id)}, " +
+                    $"{Publication.Name_} = {Converter.StringToDatabase(t.Name)}, " +
+                    $"{Publication.Type_} = {Converter.StringToDatabase(t.Type)}, " +
+                    $"{Publication.Size_} = {Converter.IntToString(t.Size)}, " +
+                    $"{Publication.PrintingCount_} = {Converter.IntToString(t.PrintingCount)} " +
+                    $"WHERE {Publication.Id_} = {Converter.IntToString(publications[index].Id)}");
+                publications[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(PublicationType))
+            {
+                PublicationType t = (PublicationType)update;
+                int index = publicationTypes.IndexOf((PublicationType)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE PublicationType " +
+                    $"SET {PublicationType.Type_} = {Converter.StringToDatabase(t.Type)} " +
+                    $"WHERE {PublicationType.Type_} = {Converter.StringToDatabase(publicationTypes[index].Type)}");
+                publicationTypes[index].Type = t.Type;
+                return;
+            }
+            if (old.GetType() == typeof(Login))
+            {
+                Login t = (Login)update;
+                int index = logins.IndexOf((Login)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE Login " +
+                    $"SET {Login.Id_} = {Converter.IntToString(t.Id)}," +
+                    $"{Login.Username_} = {Converter.StringToDatabase(Login.Username_)}, " +
+                    $"{Login.Password_} = {Converter.StringToDatabase(t.Password)} " +
+                    $"WHERE {Login.Id_} = {Converter.IntToString(logins[index].Id)}");
+                logins[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(Author))
+            {
+                Author t = (Author)update;
+                int index = authors.IndexOf((Author)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE Author " +
+                    $"SET {Author.Id_} = {Converter.IntToString(t.Id)}, " +
+                    $"{Author.AdditionalInfo_} = {Converter.StringToDatabase(t.AdditionalInfo)} " +
+                    $"WHERE {Author.Id_} = {Converter.IntToString(authors[index].Id)}");
+                authors[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(Authorship))
+            {
+                Authorship t = (Authorship)update;
+                int index = authorships.IndexOf((Authorship)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE Authorship " +
+                    $"SET {Authorship.IdAuthor_} = {Converter.IntToString(t.IdAuthor)}," +
+                    $"{Authorship.IdPublication_} = {Converter.IntToString(t.IdPublication)}" +
+                    $"WHERE {Authorship.IdAuthor_} = {Converter.IntToString(authorships[index].IdAuthor)} and " +
+                    $"{Authorship.IdPublication_} = {Converter.IntToString(authorships[index].IdPublication)}");
+                authorships[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(PrintingHouse))
+            {
+                PrintingHouse t = (PrintingHouse)update;
+                int index = printingHouses.IndexOf((PrintingHouse)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE PrintingHouse " +
+                    $"SET {PrintingHouse.Id_} = {Converter.IntToString(t.Id)}," +
+                    $"{PrintingHouse.Name_} = {Converter.StringToDatabase(t.Name)}," +
+                    $"{PrintingHouse.Address_} = {Converter.StringToDatabase(t.Address)} " +
+                    $"WHERE {PrintingHouse.Id_} = {Converter.IntToString(printingHouses[index].Id)}");
+                printingHouses[index] = t;
+                return;
+            }
+            if (old.GetType() == typeof(PublishingOrder))
+            {
+                PublishingOrder t = (PublishingOrder)update;
+                int index = publishingOrders.IndexOf((PublishingOrder)old);
+                if (index == -1) throw new Exception("Didn't find item");
+                DoCommand($"UPDATE PublishingOrder " +
+                    $"SET {PublishingOrder.Id_} = {Converter.IntToString(t.Id)}," +
+                    $"{PublishingOrder.IdPublication_} = {Converter.IntToString(t.IdPublication)}," +
+                    $"{PublishingOrder.IdPrintingHouse_} = {Converter.IntToString(t.IdPrintingHouse)}," +
+                    $"{PublishingOrder.IdRepresentative_} = {Converter.IntToString(t.IdRepresentative)}," +
+                    $"{PublishingOrder.DateOrder_} = {Converter.DateTimeToDatabase(t.DateOrder)}," +
+                    $"{PublishingOrder.DateCompliting_} = {Converter.DateTimeToDatabase(t.DateCompliting)}," +
+                    $"{PublishingOrder.OrderStatus_} = {Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))} " +
+                    $"WHERE {PublishingOrder.Id_} = {Converter.IntToString(publishingOrders[index].Id)}");
+                publishingOrders[index] = t;
+                return;
+            }
+
+            //        case Table.PublishingOrder:
+            //            publishingOrders.Clear();
+            //            foreach (DataGridViewRow item in dataGridView.Rows)
+            //            {
+            //                PublishingOrder publishingOrder = new PublishingOrder();
+            //                publishingOrder.Id = Converter.StringToInt(item.Cells[PublishingOrder.Id_].Value?.ToString());
+            //                publishingOrder.IdPublication = Converter.StringToInt(item.Cells[PublishingOrder.IdPublication_].Value?.ToString());
+            //                publishingOrder.IdPrintingHouse = Converter.StringToInt(item.Cells[PublishingOrder.IdPrintingHouse_].Value?.ToString());
+            //                publishingOrder.IdRepresentative = Converter.StringToInt(item.Cells[PublishingOrder.IdRepresentative_].Value?.ToString());
+            //                publishingOrder.DateOrder = Converter.DataToDateTime(item.Cells[PublishingOrder.DateOrder_].Value?.ToString());
+            //                publishingOrder.DateCompliting = Converter.DataToDateTime(item.Cells[PublishingOrder.DateCompliting_].Value?.ToString());
+            //                publishingOrder.Status = OrderStatusHelper.StringToEnum(item.Cells[PublishingOrder.OrderStatus_].Value?.ToString());
+            //                publishingOrders.Add(publishingOrder);
+            //            }
+            //                break;
+            //        case Table.Representative:
+            //            representatives.Clear();
+            //            foreach (DataGridViewRow item in dataGridView.Rows)
+            //            {
+            //                Representative representative = new Representative();
+            //                representative.Id = (item.Cells[Representative.Id_].Value != null) ? int.Parse(item.Cells[Representative.Id_].Value.ToString()) : 0;
+            //                representative.IdEntity = (item.Cells[Representative.IdEntity_].Value != null) ? int.Parse(item.Cells[Representative.IdEntity_].Value.ToString()) : 0;
+            //                representative.IdAuthor = (item.Cells[Representative.IdAuthor_].Value != null) ? int.Parse(item.Cells[Representative.IdAuthor_].Value.ToString()) : 0;
+            //                representatives.Add(representative);
+            //            }
+            //                break;
+            //    }
+            //}
+            //catch(Exception e)
+            //{
+            //    MessageBox.Show(e.ToString());
+            //}
+        }
+
+        private static void DoCommand(string query)
         {
             try
             {
-                switch (Session.Table)
-                {
-                    case Table.Person:
-                        persons.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Person person = new Person();
-                            person.Id = Converter.StringToInt(item.Cells[Person.Id_].Value?.ToString());
-                            person.Name = Converter.DataToString(item.Cells[Person.Name_].Value?.ToString());
-                            person.Address = Converter.DataToString(item.Cells[Person.Address_].Value?.ToString());
-                            person.Phone = Converter.DataToString(item.Cells[Person.Phone_].Value?.ToString());
-                            persons.Add(person);
-                        }
-                        break;
-                    case Table.Entity:
-                        entities.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Entity entity = new Entity();
-                            entity.Id = (item.Cells[Entity.Id_].Value != null) ? int.Parse(item.Cells[Entity.Id_].Value.ToString()) : 0;
-                            entity.Name = item.Cells[Entity.Name_].Value?.ToString();
-                            entities.Add(entity);
-                        }
-                        break;
-                    case Table.Publication:
-                        publications.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Publication publication = new Publication();
-                            publication.Id = (item.Cells[Publication.Id_].Value != null) ? int.Parse(item.Cells[Publication.Id_].Value.ToString()) : 0;
-                            publication.Name = item.Cells[Publication.Name_].Value?.ToString();
-                            publication.Type = item.Cells[Publication.Type_].Value?.ToString();
-                            publication.Size = (item.Cells[Publication.Size_].Value != null) ? int.Parse(item.Cells[Publication.Size_].Value.ToString()) : 0;
-                            publication.PrintingCount = (item.Cells[Publication.PrintingCount_].Value != null) ? int.Parse(item.Cells[Publication.PrintingCount_].Value.ToString()) : 0;
-                            publications.Add(publication);
-                        }
-                        break;
-                    case Table.PublicationType:
-                        publicationTypes.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            PublicationType publicationType = new PublicationType();
-                            publicationType.Type = item.Cells[PublicationType.Type_].Value?.ToString();
-                            publicationTypes.Add(publicationType);
-                        }
-                        break;
-                    case Table.Login:
-                        logins.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Login login = new Login();
-                            login.Id = (item.Cells[Login.Id_].Value != null) ? int.Parse(item.Cells[Login.Id_].Value.ToString()) : 0;
-                            login.Username = item.Cells[Login.Username_].Value?.ToString();
-                            login.Password = item.Cells[Login.Password_].Value?.ToString();
-                            logins.Add(login);
-                        }
-                        break;
-                    case Table.Author:
-                        authors.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Author author = new Author();
-                            author.Id = (item.Cells[Author.Id_].Value != null) ? int.Parse(item.Cells[Author.Id_].Value.ToString()) : 0;
-                            author.AdditionalInfo = item.Cells[Author.AdditionalInfo_].Value?.ToString();
-                            authors.Add(author);
-                        }
-                        break;
-                    case Table.Authorship:
-                        authorships.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Authorship authorship = new Authorship();
-                            authorship.IdAuthor = (item.Cells[Authorship.IdAuthor_].Value != null) ? int.Parse(item.Cells[Authorship.IdAuthor_].Value.ToString()) : 0;
-                            authorship.IdPublication = (item.Cells[Authorship.IdPublication_].Value != null) ? int.Parse(item.Cells[Authorship.IdPublication_].Value.ToString()) : 0;
-                            authorships.Add(authorship);
-                        }
-                        break;
-                    case Table.PrintingHouse:
-                        printingHouses.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            PrintingHouse printingHouse = new PrintingHouse();
-                            printingHouse.Id = (item.Cells[PrintingHouse.Id_].Value != null) ? int.Parse(item.Cells[PrintingHouse.Id_].Value.ToString()) : 0;
-                            printingHouse.Name = item.Cells[PrintingHouse.Name_].Value?.ToString();
-                            printingHouse.Address = item.Cells[PrintingHouse.Address_].Value?.ToString();
-                            printingHouses.Add(printingHouse);
-                        }
-                        break;
-                    case Table.PublishingOrder:
-                        publishingOrders.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            PublishingOrder publishingOrder = new PublishingOrder();
-                            publishingOrder.Id = Converter.StringToInt(item.Cells[PublishingOrder.Id_].Value?.ToString());
-                            publishingOrder.IdPublication = Converter.StringToInt(item.Cells[PublishingOrder.IdPublication_].Value?.ToString());
-                            publishingOrder.IdPrintingHouse = Converter.StringToInt(item.Cells[PublishingOrder.IdPrintingHouse_].Value?.ToString());
-                            publishingOrder.IdRepresentative = Converter.StringToInt(item.Cells[PublishingOrder.IdRepresentative_].Value?.ToString());
-                            publishingOrder.DateOrder = Converter.DataToDateTime(item.Cells[PublishingOrder.DateOrder_].Value?.ToString());
-                            publishingOrder.DateCompliting = Converter.DataToDateTime(item.Cells[PublishingOrder.DateCompliting_].Value?.ToString());
-                            publishingOrder.Status = OrderStatusHelper.StringToEnum(item.Cells[PublishingOrder.OrderStatus_].Value?.ToString());
-                            publishingOrders.Add(publishingOrder);
-                        }
-                            break;
-                    case Table.Representative:
-                        representatives.Clear();
-                        foreach (DataGridViewRow item in dataGridView.Rows)
-                        {
-                            Representative representative = new Representative();
-                            representative.Id = (item.Cells[Representative.Id_].Value != null) ? int.Parse(item.Cells[Representative.Id_].Value.ToString()) : 0;
-                            representative.IdEntity = (item.Cells[Representative.IdEntity_].Value != null) ? int.Parse(item.Cells[Representative.IdEntity_].Value.ToString()) : 0;
-                            representative.IdAuthor = (item.Cells[Representative.IdAuthor_].Value != null) ? int.Parse(item.Cells[Representative.IdAuthor_].Value.ToString()) : 0;
-                            representatives.Add(representative);
-                        }
-                            break;
-                }
+                SqlCommand command = new SqlCommand(query, connection);
+                MessageBox.Show($"{command.ExecuteNonQuery()} rows has been affected");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
-            }
-        }
-
-        public static void SaveChangesToDatabase(DataGridView dataGridView)
-        {
-            switch (Session.Table)
-            {
-
+                MessageBox.Show($"Error while doing {query}\n{e.ToString()}");
             }
         }
     }
