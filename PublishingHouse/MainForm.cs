@@ -26,7 +26,7 @@ namespace PublishingHouse
         private void MainForm_Load(object sender, EventArgs e)
         {
             Session.Table = Table.Person;
-            if(Session.IDph != 0)
+            if (Session.IDph != 0)
             {
                 login_mmi.Visible = false;
                 printingHouse_mmi.Visible = false;
@@ -54,6 +54,8 @@ namespace PublishingHouse
 
         private void LoadDataGridView(DataGridView dataGridView, Table table, Label header)
         {
+            dataGridView.Rows.Clear();
+            dataGridView.Columns.Clear();
             switch (table)
             {
                 case Table.Person:
@@ -174,7 +176,7 @@ namespace PublishingHouse
                     comboBox_Order_IDPublication.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdPublication_].Value?.ToString();
                     dateTimePicker_Order_DateOrder.Value = Converter.DataToDateTime(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.DateOrder_].Value?.ToString());
                     dateTimePicker_Order_DateComp.Value = Converter.DataToDateTime(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.DateCompliting_].Value?.ToString());
-                    comboBox_Order_IDRepres.SelectedItem =  dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdRepresentative_].Value?.ToString();
+                    comboBox_Order_IDRepres.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdRepresentative_].Value?.ToString();
                     break;
                 case Table.Publication:
                     comboBox_Publication_Type.SelectedItem = null;
@@ -252,7 +254,7 @@ namespace PublishingHouse
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Name_].Value = Converter.StringToDataBox(textBox_Person_Name.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Address_].Value = Converter.StringToDataBox(richTextBox_Person_Address.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Phone_].Value = Converter.StringToDataBox(textBox_Person_Phone.Text);
-                    Database.SaveChanges(Database.persons[dataGridViewMain.SelectedCells[0].RowIndex], person);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, person);
                     break;
                 case Table.PublishingOrder:
                     PublishingOrder order = new PublishingOrder();
@@ -270,7 +272,7 @@ namespace PublishingHouse
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateOrder_].Value = dateTimePicker_Order_DateOrder.Value.ToString("dd.MM.yyyy");
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateCompliting_].Value = dateTimePicker_Order_DateComp.Value.ToString("dd.MM.yyyy");
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdRepresentative_].Value = Converter.StringToDataBox(comboBox_Order_IDRepres.SelectedItem?.ToString());
-                    Database.SaveChanges(Database.publishingOrders[dataGridViewMain.SelectedCells[0].RowIndex], order);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, order);
                     break;
                 case Table.Publication:
                     Publication publication = new Publication();
@@ -284,7 +286,7 @@ namespace PublishingHouse
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Type_].Value = Converter.StringToDataBox(comboBox_Publication_Type.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Size_].Value = Converter.StringToDataBox(textBox_Publication_Size.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.PrintingCount_].Value = Converter.StringToDataBox(textBox_Publication_PrintingCount.Text);
-                    Database.SaveChanges(Database.publications[dataGridViewMain.SelectedCells[0].RowIndex], publication);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, publication);
                     break;
                 case Table.Author:
                     Author author = new Author();
@@ -292,7 +294,7 @@ namespace PublishingHouse
                     author.AdditionalInfo = richTextBox_Author_Info.Text;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value = Converter.StringToDataBox(comboBox_Author_ID.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.AdditionalInfo_].Value = Converter.StringToDataBox(richTextBox_Author_Info.Text);
-                    Database.SaveChanges(Database.authors[dataGridViewMain.SelectedCells[0].RowIndex], author);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, author);
                     break;
                 case Table.Authorship:
                     Authorship authorship = new Authorship();
@@ -300,6 +302,7 @@ namespace PublishingHouse
                     authorship.IdPublication = Converter.StringToInt(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value = Converter.StringToDataBox(comboBox_Authorship_IDAuthor.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value = Converter.StringToDataBox(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, authorship);
                     break;
                 case Table.Entity:
                     Entity entity = new Entity();
@@ -307,13 +310,13 @@ namespace PublishingHouse
                     entity.Name = textBox_Entity_Name.Text;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value = Converter.StringToDataBox(textBox_Entity_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Name_].Value = Converter.StringToDataBox(textBox_Entity_Name.Text);
-                    Database.SaveChanges(Database.entities[dataGridViewMain.SelectedCells[0].RowIndex], entity);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, entity);
                     break;
                 case Table.PublicationType:
                     PublicationType publicationType = new PublicationType();
                     publicationType.Type = textBoxPublicationType.Text;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value = Converter.StringToDataBox(textBoxPublicationType.Text);
-                    Database.SaveChanges(Database.publicationTypes[dataGridViewMain.SelectedCells[0].RowIndex], publicationType);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, publicationType);
                     break;
                 case Table.PrintingHouse:
                     PrintingHouse printingHouse = new PrintingHouse();
@@ -323,7 +326,7 @@ namespace PublishingHouse
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value = Converter.StringToDataBox(textBox_PH_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Name_].Value = Converter.StringToDataBox(textBox_PH_Name.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Address_].Value = Converter.StringToDataBox(richTextBox_PH_Address.Text);
-                    Database.SaveChanges(Database.printingHouses[dataGridViewMain.SelectedCells[0].RowIndex], printingHouse);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, printingHouse);
                     break;
                 case Table.Login:
                     Login login = new Login();
@@ -333,12 +336,12 @@ namespace PublishingHouse
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value = Converter.StringToDataBox(comboBox_Login_IDPH.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Username_].Value = Converter.StringToDataBox(textBox_Login_Username.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Password_].Value = Converter.StringToDataBox(textBox_Login_Password.Text);
-                    Database.SaveChanges(Database.logins[dataGridViewMain.SelectedCells[0].RowIndex], login);
+                    Database.SaveToDatabase(dataGridViewMain.SelectedCells[0].RowIndex, login);
                     break;
                     //TODO: add representative
             }
             buttonSaveChanges.Enabled = false;
-        }   
+        }
 
         private void ValueChanged(object sender, EventArgs e)
         {
@@ -480,6 +483,180 @@ namespace PublishingHouse
             labelAddData1.Text = "";
             labelAddData2.Text = "";
             labelAddData3.Text = "";
+        }
+
+        private void buttonAddNew_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow row = dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex];
+            switch (Session.Table)
+            {
+                case Table.Person:
+                    Person person = new Person();
+                    Database.persons.Add(person);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.PublishingOrder:
+                    PublishingOrder order = new PublishingOrder();
+                    Database.publishingOrders.Add(order);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.Publication:
+                    Publication publication = new Publication();
+                    Database.publications.Add(publication);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.Author:
+                    Author author = new Author();
+                    Database.authors.Add(author);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.Authorship:
+                    Authorship authorship = new Authorship();
+                    Database.authorships.Add(authorship);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.Entity:
+                    Entity entity = new Entity();
+                    Database.entities.Add(entity);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.PublicationType:
+                    PublicationType publicationType = new PublicationType();
+                    Database.publicationTypes.Add(publicationType);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.PrintingHouse:
+                    PrintingHouse printingHouse = new PrintingHouse();
+                    Database.printingHouses.Add(printingHouse);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                case Table.Login:
+                    Login login = new Login();
+                    Database.logins.Add(login);
+                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+                    dataGridViewMain.ClearSelection();
+                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
+                    break;
+                    //TODO: add representative
+
+            }
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow row = dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex];
+            switch (Session.Table)
+            {
+                case Table.Person:
+                    Person person = Database.persons.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[Person.Id_].Value?.ToString()));
+                    if (person == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(person);
+                    break;
+                case Table.PublishingOrder:
+                    PublishingOrder publishingOrder = Database.publishingOrders.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[PublishingOrder.Id_].Value?.ToString()));
+                    if (publishingOrder == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(publishingOrder);
+                    break;
+                case Table.Publication:
+                    Publication publication = Database.publications.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[Publication.Id_].Value?.ToString()));
+                    if (publication == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(publication);
+                    break;
+                case Table.Author:
+                    Author author = Database.authors.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[Author.Id_].Value?.ToString()));
+                    if (author == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(author);
+                    break;
+                case Table.Authorship:
+                    Authorship authorship = Database.authorships.FirstOrDefault(x => x.IdAuthor == Converter.StringToInt(row.Cells[Authorship.IdAuthor_].Value?.ToString()) && x.IdPublication == Converter.StringToInt(row.Cells[Authorship.IdPublication_].Value?.ToString()));
+                    if (authorship == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(authorship);
+                    break;
+                case Table.Entity:
+                    Entity entity = Database.entities.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[Entity.Id_].Value?.ToString()));
+                    if (entity == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(entity);
+                    break;
+                case Table.PublicationType:
+                    PublicationType publicationType = Database.publicationTypes.FirstOrDefault(x => x.Type == row.Cells[PublicationType.Type_].Value?.ToString());
+                    if (publicationType == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(publicationType);
+                    break;
+                case Table.PrintingHouse:
+                    PrintingHouse printingHouse = Database.printingHouses.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[PrintingHouse.Id_].Value?.ToString()));
+                    if (printingHouse == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(printingHouse);
+                    break;
+                case Table.Login:
+                    Login login = Database.logins.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[Login.Id_].Value?.ToString()));
+                    if (login == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(login);
+                    break;
+                case Table.Representative:
+                    Representative representative = Database.representatives.FirstOrDefault(x => x.Id == Converter.StringToInt(row.Cells[Representative.Id_].Value?.ToString()));
+                    if (representative == null)
+                    {
+                        MessageBox.Show("Didn't find object");
+                        return;
+                    }
+                    Database.DeleteFromDatabase(representative);
+                    break;
+            }
+            LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            dataGridViewMain.ClearSelection();
+            dataGridViewMain.Rows[0].Selected = true;
         }
     }
 }
