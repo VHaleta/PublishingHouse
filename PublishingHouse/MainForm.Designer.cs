@@ -84,8 +84,7 @@
             this.textBox_Person_Name = new System.Windows.Forms.TextBox();
             this.textBox_Person_ID = new System.Windows.Forms.TextBox();
             this.buttonSaveChanges = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.groupBoxPublication = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -127,6 +126,12 @@
             this.label29 = new System.Windows.Forms.Label();
             this.buttonAddNew = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
+            this.buttonSearch = new System.Windows.Forms.Button();
+            this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orderStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.publicationStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.authorshipStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.representativeStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMain)).BeginInit();
             this.groupBoxOrder.SuspendLayout();
@@ -134,7 +139,6 @@
             this.groupBoxEntity.SuspendLayout();
             this.groupBoxPrintingHouse.SuspendLayout();
             this.groupBoxPerson.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBoxPublication.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAdd2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAdd1)).BeginInit();
@@ -150,7 +154,8 @@
             this.menuStrip1.Font = new System.Drawing.Font("Lucida Fax", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.goToToolStripMenuItem});
+            this.goToToolStripMenuItem,
+            this.statisticsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1300, 31);
@@ -420,6 +425,7 @@
             this.textBox_Order_ID.Size = new System.Drawing.Size(159, 31);
             this.textBox_Order_ID.TabIndex = 7;
             this.textBox_Order_ID.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Order_ID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // groupBoxAuthor
             // 
@@ -491,6 +497,7 @@
             this.textBox_Entity_ID.Size = new System.Drawing.Size(208, 31);
             this.textBox_Entity_ID.TabIndex = 12;
             this.textBox_Entity_ID.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Entity_ID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // textBox_Entity_Name
             // 
@@ -549,6 +556,7 @@
             this.textBox_PH_ID.Size = new System.Drawing.Size(159, 31);
             this.textBox_PH_ID.TabIndex = 9;
             this.textBox_PH_ID.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_PH_ID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // textBox_PH_Name
             // 
@@ -671,10 +679,11 @@
             this.textBox_Person_ID.Size = new System.Drawing.Size(224, 31);
             this.textBox_Person_ID.TabIndex = 7;
             this.textBox_Person_ID.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Person_ID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // buttonSaveChanges
             // 
-            this.buttonSaveChanges.Location = new System.Drawing.Point(866, 394);
+            this.buttonSaveChanges.Location = new System.Drawing.Point(866, 395);
             this.buttonSaveChanges.Name = "buttonSaveChanges";
             this.buttonSaveChanges.Size = new System.Drawing.Size(422, 52);
             this.buttonSaveChanges.TabIndex = 4;
@@ -682,20 +691,12 @@
             this.buttonSaveChanges.UseVisualStyleBackColor = true;
             this.buttonSaveChanges.Click += new System.EventHandler(this.buttonSaveChanges_Click);
             // 
-            // textBox1
+            // textBoxSearch
             // 
-            this.textBox1.Location = new System.Drawing.Point(618, 41);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(182, 31);
-            this.textBox1.TabIndex = 5;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(806, 41);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(37, 31);
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
+            this.textBoxSearch.Location = new System.Drawing.Point(618, 41);
+            this.textBoxSearch.Name = "textBoxSearch";
+            this.textBoxSearch.Size = new System.Drawing.Size(182, 31);
+            this.textBoxSearch.TabIndex = 5;
             // 
             // groupBoxPublication
             // 
@@ -778,6 +779,7 @@
             this.textBox_Publication_PrintingCount.Size = new System.Drawing.Size(159, 31);
             this.textBox_Publication_PrintingCount.TabIndex = 7;
             this.textBox_Publication_PrintingCount.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Publication_PrintingCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // textBox_Publication_Size
             // 
@@ -786,6 +788,7 @@
             this.textBox_Publication_Size.Size = new System.Drawing.Size(159, 31);
             this.textBox_Publication_Size.TabIndex = 7;
             this.textBox_Publication_Size.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Publication_Size.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // textBox_Publication_Name
             // 
@@ -802,6 +805,7 @@
             this.textBox_Publication_ID.Size = new System.Drawing.Size(159, 31);
             this.textBox_Publication_ID.TabIndex = 7;
             this.textBox_Publication_ID.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Publication_ID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // dataGridViewAdd2
             // 
@@ -1047,11 +1051,14 @@
             // comboBox_Representative_Type
             // 
             this.comboBox_Representative_Type.FormattingEnabled = true;
+            this.comboBox_Representative_Type.Items.AddRange(new object[] {
+            "Entity",
+            "Author"});
             this.comboBox_Representative_Type.Location = new System.Drawing.Point(148, 90);
             this.comboBox_Representative_Type.Name = "comboBox_Representative_Type";
             this.comboBox_Representative_Type.Size = new System.Drawing.Size(121, 31);
             this.comboBox_Representative_Type.TabIndex = 9;
-            this.comboBox_Representative_Type.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
+            this.comboBox_Representative_Type.SelectedIndexChanged += new System.EventHandler(this.comboBox_Representative_Type_SelectedIndexChanged);
             this.comboBox_Representative_Type.TextChanged += new System.EventHandler(this.ValueChanged);
             // 
             // comboBox_Representative_ID
@@ -1093,7 +1100,7 @@
             // 
             // buttonAddNew
             // 
-            this.buttonAddNew.Location = new System.Drawing.Point(866, 510);
+            this.buttonAddNew.Location = new System.Drawing.Point(866, 511);
             this.buttonAddNew.Name = "buttonAddNew";
             this.buttonAddNew.Size = new System.Drawing.Size(422, 52);
             this.buttonAddNew.TabIndex = 13;
@@ -1103,7 +1110,7 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(866, 452);
+            this.buttonDelete.Location = new System.Drawing.Point(866, 453);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(422, 52);
             this.buttonDelete.TabIndex = 14;
@@ -1111,11 +1118,56 @@
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
             // 
+            // buttonSearch
+            // 
+            this.buttonSearch.Location = new System.Drawing.Point(806, 41);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(37, 31);
+            this.buttonSearch.TabIndex = 15;
+            this.buttonSearch.UseVisualStyleBackColor = true;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            // 
+            // statisticsToolStripMenuItem
+            // 
+            this.statisticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.orderStatistics_mmi,
+            this.publicationStatistics_mmi,
+            this.authorshipStatistics_mmi,
+            this.representativeStatistics_mmi});
+            this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(117, 27);
+            this.statisticsToolStripMenuItem.Text = "Statistics";
+            // 
+            // orderStatistics_mmi
+            // 
+            this.orderStatistics_mmi.Name = "orderStatistics_mmi";
+            this.orderStatistics_mmi.Size = new System.Drawing.Size(266, 28);
+            this.orderStatistics_mmi.Text = "Publishing Order";
+            // 
+            // publicationStatistics_mmi
+            // 
+            this.publicationStatistics_mmi.Name = "publicationStatistics_mmi";
+            this.publicationStatistics_mmi.Size = new System.Drawing.Size(266, 28);
+            this.publicationStatistics_mmi.Text = "Publication";
+            // 
+            // authorshipStatistics_mmi
+            // 
+            this.authorshipStatistics_mmi.Name = "authorshipStatistics_mmi";
+            this.authorshipStatistics_mmi.Size = new System.Drawing.Size(266, 28);
+            this.authorshipStatistics_mmi.Text = "Authorship";
+            // 
+            // representativeStatistics_mmi
+            // 
+            this.representativeStatistics_mmi.Name = "representativeStatistics_mmi";
+            this.representativeStatistics_mmi.Size = new System.Drawing.Size(266, 28);
+            this.representativeStatistics_mmi.Text = "Representative";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1300, 647);
+            this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonAddNew);
             this.Controls.Add(this.groupBoxEntity);
@@ -1128,8 +1180,7 @@
             this.Controls.Add(this.groupBoxRepresentative);
             this.Controls.Add(this.groupBoxAuthorship);
             this.Controls.Add(this.groupBoxPublication);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonSaveChanges);
             this.Controls.Add(this.labelAddData3);
             this.Controls.Add(this.labelAddData2);
@@ -1146,7 +1197,7 @@
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Publishing House";
+            this.Text = "w";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1161,7 +1212,6 @@
             this.groupBoxPrintingHouse.PerformLayout();
             this.groupBoxPerson.ResumeLayout(false);
             this.groupBoxPerson.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBoxPublication.ResumeLayout(false);
             this.groupBoxPublication.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAdd2)).EndInit();
@@ -1192,8 +1242,7 @@
         private System.Windows.Forms.ComboBox comboBox_Order_IDPublication;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonSaveChanges;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.DateTimePicker dateTimePicker_Order_DateComp;
         private System.Windows.Forms.DateTimePicker dateTimePicker_Order_DateOrder;
         private System.Windows.Forms.ComboBox comboBox_Order_Status;
@@ -1281,6 +1330,12 @@
         private System.Windows.Forms.ComboBox comboBox_Login_IDPH;
         private System.Windows.Forms.Button buttonAddNew;
         private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button buttonSearch;
+        private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem orderStatistics_mmi;
+        private System.Windows.Forms.ToolStripMenuItem publicationStatistics_mmi;
+        private System.Windows.Forms.ToolStripMenuItem authorshipStatistics_mmi;
+        private System.Windows.Forms.ToolStripMenuItem representativeStatistics_mmi;
     }
 }
 

@@ -186,322 +186,323 @@ namespace PublishingHouse
             }
         }
 
-        public static void SaveToDatabase(object old, object update)
-        {
-            if (update.GetType() == typeof(Person))
-            {
-                Person t = (Person)update;
-                int index = persons.IndexOf((Person)old);
-                if (index == -1) throw new Exception("Didn't find item");
-//                CascadeUpdate(persons[index], update);
-                if (DoesExists($"SELECT * FROM Person WHERE {Person.Id_} = {Converter.IntToString(persons[index].Id)}"))
-                    DoCommand($"UPDATE Person " +
-                    $"SET {Person.Id_} = {Converter.IntToString(t.Id)}, " +
-                    $"{Person.Name_} = {Converter.StringToDatabase(t.Name)}, " +
-                    $"{Person.Address_} = {Converter.StringToDatabase(t.Address)}, " +
-                    $"{Person.Phone_} = {Converter.StringToDatabase(t.Phone)} " +
-                    $"WHERE {Person.Id_} = {Converter.IntToString(persons[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO Person ({Person.Id_}, {Person.Name_}, {Person.Address_}, {Person.Phone_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.StringToDatabase(t.Name)}, " +
-                    $"{Converter.StringToDatabase(t.Address)}, " +
-                    $"{Converter.StringToDatabase(t.Phone)})");
-                persons[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(Entity))
-            {
-                Entity t = (Entity)update;
-                int index = entities.IndexOf((Entity)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM Person WHERE {Entity.Id_} = {Converter.IntToString(entities[index].Id)}"))
-                    DoCommand($"UPDATE Entity " +
-                    $"SET {Entity.Id_} = {Converter.IntToString(t.Id)}, " +
-                    $"{Entity.Name_} = {Converter.StringToDatabase(t.Name)} " +
-                    $"WHERE {Entity.Id_} = {Converter.IntToString(entities[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO Entity ({Entity.Id_}, {Entity.Name_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.StringToDatabase(t.Name)})");
-                entities[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(Publication))
-            {
-                Publication t = (Publication)update;
-                int index = publications.IndexOf((Publication)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM Publication WHERE {Publication.Id_} = {Converter.IntToString(publications[index].Id)}"))
-                    DoCommand($"UPDATE Publication " +
-                    $"SET {Publication.Id_} = {Converter.IntToString(t.Id)}, " +
-                    $"{Publication.Name_} = {Converter.StringToDatabase(t.Name)}, " +
-                    $"{Publication.Type_} = {Converter.StringToDatabase(t.Type)}, " +
-                    $"{Publication.Size_} = {Converter.IntToString(t.Size)}, " +
-                    $"{Publication.PrintingCount_} = {Converter.IntToString(t.PrintingCount)} " +
-                    $"WHERE {Publication.Id_} = {Converter.IntToString(publications[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO Publication ({Publication.Id_}, {Publication.Name_}, {Publication.Type_}, {Publication.Size_}, {Publication.PrintingCount_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.StringToDatabase(t.Name)}, " +
-                    $"{Converter.StringToDatabase(t.Type)}, " +
-                    $"{Converter.IntToString(t.Size)}, " +
-                    $"{Converter.IntToString(t.PrintingCount)})");
-                publications[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(PublicationType))
-            {
-                PublicationType t = (PublicationType)update;
-                int index = publicationTypes.IndexOf((PublicationType)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM PublicationType WHERE {PublicationType.Type_} = {Converter.StringToDatabase(publicationTypes[index].Type)}"))
-                    DoCommand($"UPDATE PublicationType " +
-                    $"SET {PublicationType.Type_} = {Converter.StringToDatabase(t.Type)} " +
-                    $"WHERE {PublicationType.Type_} = {Converter.StringToDatabase(publicationTypes[index].Type)}");
-                else
-                    DoCommand($"INSERT INTO PublicationType ({PublicationType.Type_}) " +
-                    $"VALUES ({Converter.StringToDatabase(t.Type)})");
-                publicationTypes[index].Type = t.Type;
-                return;
-            }
-            if (update.GetType() == typeof(Login))
-            {
-                Login t = (Login)update;
-                int index = logins.IndexOf((Login)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM Login WHERE {Login.Id_} = {Converter.IntToString(logins[index].Id)}"))
-                    DoCommand($"UPDATE Login " +
-                    $"SET {Login.Id_} = {Converter.IntToString(t.Id)}," +
-                    $"{Login.Username_} = {Converter.StringToDatabase(t.Username)}, " +
-                    $"{Login.Password_} = {Converter.StringToDatabase(t.Password)} " +
-                    $"WHERE {Login.Id_} = {Converter.IntToString(logins[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO Login ({Login.Id_}, {Login.Username_}, {Login.Password_}) " +
-                    $"VALUES({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.StringToDatabase(t.Username)}, " +
-                    $"{Converter.StringToDatabase(t.Password)}) ");
-                logins[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(Author))
-            {
-                Author t = (Author)update;
-                int index = authors.IndexOf((Author)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM Author WHERE {Author.Id_} = {Converter.IntToString(authors[index].Id)}"))
-                    DoCommand($"UPDATE Author " +
-                    $"SET {Author.Id_} = {Converter.IntToString(t.Id)}, " +
-                    $"{Author.AdditionalInfo_} = {Converter.StringToDatabase(t.AdditionalInfo)} " +
-                    $"WHERE {Author.Id_} = {Converter.IntToString(authors[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO Author ({Author.Id_}, {Author.AdditionalInfo_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.StringToDatabase(t.AdditionalInfo)})");
-                authors[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(Authorship))
-            {
-                Authorship t = (Authorship)update;
-                int index = authorships.IndexOf((Authorship)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM Authorship WHERE {Authorship.IdAuthor_} = {Converter.IntToString(authorships[index].IdAuthor)} and {Authorship.IdPublication_} = {Converter.IntToString(authorships[index].IdPublication)}"))
-                    DoCommand($"UPDATE Authorship " +
-                    $"SET {Authorship.IdAuthor_} = {Converter.IntToString(t.IdAuthor)}," +
-                    $"{Authorship.IdPublication_} = {Converter.IntToString(t.IdPublication)}" +
-                    $"WHERE {Authorship.IdAuthor_} = {Converter.IntToString(authorships[index].IdAuthor)} and " +
-                    $"{Authorship.IdPublication_} = {Converter.IntToString(authorships[index].IdPublication)}");
-                else
-                    DoCommand($"INSERT INTO Authorship ({Authorship.IdAuthor_}, {Authorship.IdPublication_}) " +
-                    $"VALUES ({Converter.IntToString(t.IdAuthor)}, " +
-                    $"{Converter.IntToString(t.IdPublication)})");
-                authorships[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(PrintingHouse))
-            {
-                PrintingHouse t = (PrintingHouse)update;
-                int index = printingHouses.IndexOf((PrintingHouse)old);
-                if (index == -1) throw new Exception("Didn't find item");
-//                CascadeCheck(old, t);
-                if (DoesExists($"SELECT * FROM PrintingHouse WHERE {PrintingHouse.Id_} = {Converter.IntToString(printingHouses[index].Id)}"))
-                    DoCommand($"UPDATE PrintingHouse " +
-                    $"SET {PrintingHouse.Id_} = {Converter.IntToString(t.Id)}, " +
-                    $"{PrintingHouse.Name_} = {Converter.StringToDatabase(t.Name)}, " +
-                    $"{PrintingHouse.Address_} = {Converter.StringToDatabase(t.Address)} " +
-                    $"WHERE {PrintingHouse.Id_} = {Converter.IntToString(printingHouses[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO PrintingHouse ({PrintingHouse.Id_}, {PrintingHouse.Name_}, {PrintingHouse.Address_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.StringToDatabase(t.Name)}, " +
-                    $"{Converter.StringToDatabase(t.Address)}) ");
-                printingHouses[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(PublishingOrder))
-            {
-                PublishingOrder t = (PublishingOrder)update;
-                int index = publishingOrders.IndexOf((PublishingOrder)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM PublishingOrder WHERE {PublishingOrder.Id_} = {Converter.IntToString(publishingOrders[index].Id)}"))
-                    DoCommand($"UPDATE PublishingOrder " +
-                    $"SET {PublishingOrder.Id_} = {Converter.IntToString(t.Id)}, " +
-                    $"{PublishingOrder.IdPublication_} = {Converter.IntToString(t.IdPublication)}, " +
-                    $"{PublishingOrder.IdPrintingHouse_} = {Converter.IntToString(t.IdPrintingHouse)}, " +
-                    $"{PublishingOrder.IdRepresentative_} = {Converter.IntToString(t.IdRepresentative)}, " +
-                    $"{PublishingOrder.DateOrder_} = {Converter.DateTimeToDatabase(t.DateOrder)}, " +
-                    $"{PublishingOrder.DateCompliting_} = {Converter.DateTimeToDatabase(t.DateCompliting)}, " +
-                    $"{PublishingOrder.OrderStatus_} = {Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))} " +
-                    $"WHERE {PublishingOrder.Id_} = {Converter.IntToString(publishingOrders[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO PublishingOrder ({PublishingOrder.Id_}, {PublishingOrder.IdPublication_}, {PublishingOrder.IdPrintingHouse_}, {PublishingOrder.IdRepresentative_}, {PublishingOrder.DateOrder_}, {PublishingOrder.DateCompliting_}, {PublishingOrder.OrderStatus_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.IntToString(t.IdPublication)}, " +
-                    $"{Converter.IntToString(t.IdPrintingHouse)}, " +
-                    $"{Converter.IntToString(t.IdRepresentative)}, " +
-                    $"{Converter.DateTimeToDatabase(t.DateOrder)}, " +
-                    $"{Converter.DateTimeToDatabase(t.DateCompliting)}, " +
-                    $"{Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))}) ");
-                publishingOrders[index] = t;
-                return;
-            }
-            if (update.GetType() == typeof(Representative))
-            {
-                Representative t = (Representative)update;
-                int index = representatives.IndexOf((Representative)old);
-                if (index == -1) throw new Exception("Didn't find item");
-                if (DoesExists($"SELECT * FROM Representative WHERE {Representative.Id_} = {Converter.IntToString(representatives[index].Id)}"))
-                    DoCommand($"UPDATE PublishingOrder " +
-                    $"SET {Representative.Id_} = {Converter.IntToString(t.Id)}," +
-                    $"{Representative.IdEntity_} = {Converter.IntToString(t.IdEntity)}," +
-                    $"{Representative.IdAuthor_} = {Converter.IntToString(t.IdAuthor)} " +
-                    $"WHERE {Representative.Id_} = {Converter.IntToString(representatives[index].Id)}");
-                else
-                    DoCommand($"INSERT INTO PublishingOrder ({Representative.Id_}, {Representative.IdEntity_}, {Representative.IdAuthor_}) " +
-                    $"VALUES ({Converter.IntToString(t.Id)}, " +
-                    $"{Converter.IntToString(t.IdEntity)}, " +
-                    $"{Converter.IntToString(t.IdAuthor)}) ");
-                representatives[index] = t;
-                return;
-            }
-        }
-
-        public static void DeleteFromDatabase(object obj)
-        {
-            if (obj.GetType() == typeof(Person))
-            {
-                Person t = (Person)obj;
-                if (DoCommand($"DELETE FROM Person " +
-                    $"WHERE {Person.Id_} = {Converter.IntToString(t.Id)}"))
-                    persons.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(Entity))
-            {
-                Entity t = (Entity)obj;
-                if (DoCommand($"DELETE FROM Entity " +
-                    $"WHERE {Entity.Id_} = {Converter.IntToString(t.Id)}"))
-                    entities.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(Publication))
-            {
-                Publication t = (Publication)obj;
-                if (DoCommand($"DELETE FROM Publication " +
-                    $"WHERE {Publication.Id_} = {Converter.IntToString(t.Id)}"))
-                    publications.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(PublicationType))
-            {
-                PublicationType t = (PublicationType)obj;
-                if (DoCommand($"DELETE FROM PublicationType " +
-                    $"WHERE {PublicationType.Type_} = {Converter.StringToDatabase(t.Type)}"))
-                    publicationTypes.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(Login))
-            {
-                Login t = (Login)obj;
-                if (DoCommand($"DELETE FROM Login " +
-                    $"WHERE {Login.Id_} = {Converter.IntToString(t.Id)}"))
-                    logins.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(Author))
-            {
-                Author t = (Author)obj;
-                if (DoCommand($"DELETE FROM Author " +
-                    $"WHERE {Author.Id_} = {Converter.IntToString(t.Id)}"))
-                    authors.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(Authorship))
-            {
-                Authorship t = (Authorship)obj;
-                if (DoCommand($"DELETE FROM Authorship " +
-                    $"WHERE {Authorship.IdAuthor_} = {Converter.IntToString(t.IdAuthor)} and " +
-                    $"{Authorship.IdPublication_} = {Converter.IntToString(t.IdPublication)}"))
-                    authorships.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(PrintingHouse))
-            {
-                PrintingHouse t = (PrintingHouse)obj;
-                if (DoCommand($"DELETE FROM PrintingHouse " +
-                    $"WHERE {PrintingHouse.Id_} = {Converter.IntToString(t.Id)}"))
-                    printingHouses.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(PublishingOrder))
-            {
-                PublishingOrder t = (PublishingOrder)obj;
-                if (DoCommand($"DELETE FROM PublishingOrder " +
-                    $"WHERE {PublishingOrder.Id_} = {Converter.IntToString(t.Id)}"))
-                    publishingOrders.Remove(t);
-                return;
-            }
-            if (obj.GetType() == typeof(Representative))
-            {
-                Representative t = (Representative)obj;
-                if (DoCommand($"DELETE FROM Representative " +
-                    $"WHERE {Representative.Id_} = {Converter.IntToString(t.Id)}"))
-                    representatives.Remove(t);
-                return;
-            }
-        }
-
-        private static bool DoCommand(string query)
+        public static bool SaveToDatabase(object old, object update)
         {
             try
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                MessageBox.Show($"{command.ExecuteNonQuery()} rows has been affected");
+                if (update.GetType() == typeof(Person))
+                {
+                    Person t = (Person)update;
+                    int index = persons.IndexOf((Person)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    //                CascadeUpdate(persons[index], update);
+                    if (DoesExists($"SELECT * FROM Person WHERE {Person.Id_} = {Converter.IntToString(persons[index].Id)}"))
+                        DoCommand($"UPDATE Person " +
+                        $"SET {Person.Id_} = {Converter.IntToString(t.Id)}, " +
+                        $"{Person.Name_} = {Converter.StringToDatabase(t.Name)}, " +
+                        $"{Person.Address_} = {Converter.StringToDatabase(t.Address)}, " +
+                        $"{Person.Phone_} = {Converter.StringToDatabase(t.Phone)} " +
+                        $"WHERE {Person.Id_} = {Converter.IntToString(persons[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO Person ({Person.Id_}, {Person.Name_}, {Person.Address_}, {Person.Phone_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.StringToDatabase(t.Name)}, " +
+                        $"{Converter.StringToDatabase(t.Address)}, " +
+                        $"{Converter.StringToDatabase(t.Phone)})");
+                    persons[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(Entity))
+                {
+                    Entity t = (Entity)update;
+                    int index = entities.IndexOf((Entity)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM Entity WHERE {Entity.Id_} = {Converter.IntToString(entities[index].Id)}"))
+                        DoCommand($"UPDATE Entity " +
+                        $"SET {Entity.Id_} = {Converter.IntToString(t.Id)}, " +
+                        $"{Entity.Name_} = {Converter.StringToDatabase(t.Name)} " +
+                        $"WHERE {Entity.Id_} = {Converter.IntToString(entities[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO Entity ({Entity.Id_}, {Entity.Name_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.StringToDatabase(t.Name)})");
+                    entities[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(Publication))
+                {
+                    Publication t = (Publication)update;
+                    int index = publications.IndexOf((Publication)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM Publication WHERE {Publication.Id_} = {Converter.IntToString(publications[index].Id)}"))
+                        DoCommand($"UPDATE Publication " +
+                        $"SET {Publication.Id_} = {Converter.IntToString(t.Id)}, " +
+                        $"{Publication.Name_} = {Converter.StringToDatabase(t.Name)}, " +
+                        $"{Publication.Type_} = {Converter.StringToDatabase(t.Type)}, " +
+                        $"{Publication.Size_} = {Converter.IntToString(t.Size)}, " +
+                        $"{Publication.PrintingCount_} = {Converter.IntToString(t.PrintingCount)} " +
+                        $"WHERE {Publication.Id_} = {Converter.IntToString(publications[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO Publication ({Publication.Id_}, {Publication.Name_}, {Publication.Type_}, {Publication.Size_}, {Publication.PrintingCount_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.StringToDatabase(t.Name)}, " +
+                        $"{Converter.StringToDatabase(t.Type)}, " +
+                        $"{Converter.IntToString(t.Size)}, " +
+                        $"{Converter.IntToString(t.PrintingCount)})");
+                    publications[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(PublicationType))
+                {
+                    PublicationType t = (PublicationType)update;
+                    int index = publicationTypes.IndexOf((PublicationType)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM PublicationType WHERE {PublicationType.Type_} = {Converter.StringToDatabase(publicationTypes[index].Type)}"))
+                        DoCommand($"UPDATE PublicationType " +
+                        $"SET {PublicationType.Type_} = {Converter.StringToDatabase(t.Type)} " +
+                        $"WHERE {PublicationType.Type_} = {Converter.StringToDatabase(publicationTypes[index].Type)}");
+                    else
+                        DoCommand($"INSERT INTO PublicationType ({PublicationType.Type_}) " +
+                        $"VALUES ({Converter.StringToDatabase(t.Type)})");
+                    publicationTypes[index].Type = t.Type;
+                    return true;
+                }
+                if (update.GetType() == typeof(Login))
+                {
+                    Login t = (Login)update;
+                    int index = logins.IndexOf((Login)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM Login WHERE {Login.Id_} = {Converter.IntToString(logins[index].Id)}"))
+                        DoCommand($"UPDATE Login " +
+                        $"SET {Login.Id_} = {Converter.IntToString(t.Id)}," +
+                        $"{Login.Username_} = {Converter.StringToDatabase(t.Username)}, " +
+                        $"{Login.Password_} = {Converter.StringToDatabase(t.Password)} " +
+                        $"WHERE {Login.Id_} = {Converter.IntToString(logins[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO Login ({Login.Id_}, {Login.Username_}, {Login.Password_}) " +
+                        $"VALUES({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.StringToDatabase(t.Username)}, " +
+                        $"{Converter.StringToDatabase(t.Password)}) ");
+                    logins[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(Author))
+                {
+                    Author t = (Author)update;
+                    int index = authors.IndexOf((Author)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM Author WHERE {Author.Id_} = {Converter.IntToString(authors[index].Id)}"))
+                        DoCommand($"UPDATE Author " +
+                        $"SET {Author.Id_} = {Converter.IntToString(t.Id)}, " +
+                        $"{Author.AdditionalInfo_} = {Converter.StringToDatabase(t.AdditionalInfo)} " +
+                        $"WHERE {Author.Id_} = {Converter.IntToString(authors[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO Author ({Author.Id_}, {Author.AdditionalInfo_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.StringToDatabase(t.AdditionalInfo)})");
+                    authors[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(Authorship))
+                {
+                    Authorship t = (Authorship)update;
+                    int index = authorships.IndexOf((Authorship)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM Authorship WHERE {Authorship.IdAuthor_} = {Converter.IntToString(authorships[index].IdAuthor)} and {Authorship.IdPublication_} = {Converter.IntToString(authorships[index].IdPublication)}"))
+                        DoCommand($"UPDATE Authorship " +
+                        $"SET {Authorship.IdAuthor_} = {Converter.IntToString(t.IdAuthor)}," +
+                        $"{Authorship.IdPublication_} = {Converter.IntToString(t.IdPublication)}" +
+                        $"WHERE {Authorship.IdAuthor_} = {Converter.IntToString(authorships[index].IdAuthor)} and " +
+                        $"{Authorship.IdPublication_} = {Converter.IntToString(authorships[index].IdPublication)}");
+                    else
+                        DoCommand($"INSERT INTO Authorship ({Authorship.IdAuthor_}, {Authorship.IdPublication_}) " +
+                        $"VALUES ({Converter.IntToString(t.IdAuthor)}, " +
+                        $"{Converter.IntToString(t.IdPublication)})");
+                    authorships[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(PrintingHouse))
+                {
+                    PrintingHouse t = (PrintingHouse)update;
+                    int index = printingHouses.IndexOf((PrintingHouse)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    //                CascadeCheck(old, t);
+                    if (DoesExists($"SELECT * FROM PrintingHouse WHERE {PrintingHouse.Id_} = {Converter.IntToString(printingHouses[index].Id)}"))
+                        DoCommand($"UPDATE PrintingHouse " +
+                        $"SET {PrintingHouse.Id_} = {Converter.IntToString(t.Id)}, " +
+                        $"{PrintingHouse.Name_} = {Converter.StringToDatabase(t.Name)}, " +
+                        $"{PrintingHouse.Address_} = {Converter.StringToDatabase(t.Address)} " +
+                        $"WHERE {PrintingHouse.Id_} = {Converter.IntToString(printingHouses[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO PrintingHouse ({PrintingHouse.Id_}, {PrintingHouse.Name_}, {PrintingHouse.Address_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.StringToDatabase(t.Name)}, " +
+                        $"{Converter.StringToDatabase(t.Address)}) ");
+                    printingHouses[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(PublishingOrder))
+                {
+                    PublishingOrder t = (PublishingOrder)update;
+                    int index = publishingOrders.IndexOf((PublishingOrder)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM PublishingOrder WHERE {PublishingOrder.Id_} = {Converter.IntToString(publishingOrders[index].Id)}"))
+                        DoCommand($"UPDATE PublishingOrder " +
+                        $"SET {PublishingOrder.Id_} = {Converter.IntToString(t.Id)}, " +
+                        $"{PublishingOrder.IdPublication_} = {Converter.IntToString(t.IdPublication)}, " +
+                        $"{PublishingOrder.IdPrintingHouse_} = {Converter.IntToString(t.IdPrintingHouse)}, " +
+                        $"{PublishingOrder.IdRepresentative_} = {Converter.IntToString(t.IdRepresentative)}, " +
+                        $"{PublishingOrder.DateOrder_} = {Converter.DateTimeToDatabase(t.DateOrder)}, " +
+                        $"{PublishingOrder.DateCompliting_} = {Converter.DateTimeToDatabase(t.DateCompliting)}, " +
+                        $"{PublishingOrder.OrderStatus_} = {Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))} " +
+                        $"WHERE {PublishingOrder.Id_} = {Converter.IntToString(publishingOrders[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO PublishingOrder ({PublishingOrder.Id_}, {PublishingOrder.IdPublication_}, {PublishingOrder.IdPrintingHouse_}, {PublishingOrder.IdRepresentative_}, {PublishingOrder.DateOrder_}, {PublishingOrder.DateCompliting_}, {PublishingOrder.OrderStatus_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.IntToString(t.IdPublication)}, " +
+                        $"{Converter.IntToString(t.IdPrintingHouse)}, " +
+                        $"{Converter.IntToString(t.IdRepresentative)}, " +
+                        $"{Converter.DateTimeToDatabase(t.DateOrder)}, " +
+                        $"{Converter.DateTimeToDatabase(t.DateCompliting)}, " +
+                        $"{Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))}) ");
+                    publishingOrders[index] = t;
+                    return true;
+                }
+                if (update.GetType() == typeof(Representative))
+                {
+                    Representative t = (Representative)update;
+                    int index = representatives.IndexOf((Representative)old);
+                    if (index == -1) throw new Exception("Didn't find item");
+                    if (DoesExists($"SELECT * FROM Representative WHERE {Representative.Id_} = {Converter.IntToString(representatives[index].Id)}"))
+                        DoCommand($"UPDATE Representative " +
+                        $"SET {Representative.Id_} = {Converter.IntToString(t.Id)}," +
+                        $"{Representative.IdEntity_} = {Converter.IntToString(t.IdEntity)}," +
+                        $"{Representative.IdAuthor_} = {Converter.IntToString(t.IdAuthor)} " +
+                        $"WHERE {Representative.Id_} = {Converter.IntToString(representatives[index].Id)}");
+                    else
+                        DoCommand($"INSERT INTO Representative ({Representative.Id_}, {Representative.IdEntity_}, {Representative.IdAuthor_}) " +
+                        $"VALUES ({Converter.IntToString(t.Id)}, " +
+                        $"{Converter.IntToString(t.IdEntity)}, " +
+                        $"{Converter.IntToString(t.IdAuthor)}) ");
+                    representatives[index] = t;
+                    return true;
+                }
+                return false;
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Error while doing {query}\n{e.ToString()}");
+                MessageBox.Show(e.ToString());
                 return false;
             }
-            return true;
+        }
+
+        public static bool DeleteFromDatabase(object obj)
+        {
+            try
+            {
+                if (obj.GetType() == typeof(Person))
+                {
+                    Person t = (Person)obj;
+                    DoCommand($"DELETE FROM Person " +
+                        $"WHERE {Person.Id_} = {Converter.IntToString(t.Id)}");
+                    persons.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(Entity))
+                {
+                    Entity t = (Entity)obj;
+                    DoCommand($"DELETE FROM Entity " +
+                        $"WHERE {Entity.Id_} = {Converter.IntToString(t.Id)}");
+                    entities.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(Publication))
+                {
+                    Publication t = (Publication)obj;
+                    DoCommand($"DELETE FROM Publication " +
+                        $"WHERE {Publication.Id_} = {Converter.IntToString(t.Id)}");
+                    publications.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(PublicationType))
+                {
+                    PublicationType t = (PublicationType)obj;
+                    DoCommand($"DELETE FROM PublicationType " +
+                        $"WHERE {PublicationType.Type_} = {Converter.StringToDatabase(t.Type)}");
+                    publicationTypes.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(Login))
+                {
+                    Login t = (Login)obj;
+                    DoCommand($"DELETE FROM Login " +
+                        $"WHERE {Login.Id_} = {Converter.IntToString(t.Id)}");
+                    logins.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(Author))
+                {
+                    Author t = (Author)obj;
+                    DoCommand($"DELETE FROM Author " +
+                        $"WHERE {Author.Id_} = {Converter.IntToString(t.Id)}");
+                    authors.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(Authorship))
+                {
+                    Authorship t = (Authorship)obj;
+                    DoCommand($"DELETE FROM Authorship " +
+                        $"WHERE {Authorship.IdAuthor_} = {Converter.IntToString(t.IdAuthor)} and " +
+                        $"{Authorship.IdPublication_} = {Converter.IntToString(t.IdPublication)}");
+                    authorships.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(PrintingHouse))
+                {
+                    PrintingHouse t = (PrintingHouse)obj;
+                    DoCommand($"DELETE FROM PrintingHouse " +
+                        $"WHERE {PrintingHouse.Id_} = {Converter.IntToString(t.Id)}");
+                    printingHouses.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(PublishingOrder))
+                {
+                    PublishingOrder t = (PublishingOrder)obj;
+                    DoCommand($"DELETE FROM PublishingOrder " +
+                        $"WHERE {PublishingOrder.Id_} = {Converter.IntToString(t.Id)}");
+                    publishingOrders.Remove(t);
+                    return true;
+                }
+                if (obj.GetType() == typeof(Representative))
+                {
+                    Representative t = (Representative)obj;
+                    DoCommand($"DELETE FROM Representative " +
+                        $"WHERE {Representative.Id_} = {Converter.IntToString(t.Id)}");
+                    representatives.Remove(t);
+                    return true;
+                }
+                return false;
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                return false;
+            }
+        }
+
+        private static void DoCommand(string query)
+        {
+            SqlCommand command = new SqlCommand(query, connection);
+            MessageBox.Show($"{command.ExecuteNonQuery()} rows has been affected");
         }
 
         private static bool DoesExists(string query)
         {
-            try
-            {
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader rdr = command.ExecuteReader();
-                bool result = rdr.HasRows;
-                rdr.Close();
-                return result;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Error while doing {query}\n{e.ToString()}");
-                return false;
-            }
+            SqlCommand command = new SqlCommand(query, connection);
+            SqlDataReader rdr = command.ExecuteReader();
+            bool result = rdr.HasRows;
+            rdr.Close();
+            return result;
         }
     }
 }

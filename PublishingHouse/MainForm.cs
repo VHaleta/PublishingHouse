@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -48,7 +49,7 @@ namespace PublishingHouse
             groupBoxRepresentative.Visible = false;
         }
 
-        private void LoadDataGridView(DataGridView dataGridView, Table table, Label header)
+        private void LoadDataGridView(DataGridView dataGridView, Table table, Label header, string search = "")
         {
             dataGridView.Rows.Clear();
             dataGridView.Columns.Clear();
@@ -60,8 +61,20 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Person.Name_, Person.Name_);
                     dataGridView.Columns.Add(Person.Address_, Person.Address_);
                     dataGridView.Columns.Add(Person.Phone_, Person.Phone_);
-                    foreach (var item in Database.persons)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address), Converter.StringToDataBox(item.Phone));
+                    if (search != "")
+                    {
+                        foreach (var item in Database.persons)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.StringToDataBox(item.Name).Contains(search) ||
+                                Converter.StringToDataBox(item.Address).Contains(search) ||
+                                Converter.StringToDataBox(item.Phone).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address), Converter.StringToDataBox(item.Phone));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.persons)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address), Converter.StringToDataBox(item.Phone));
                     break;
 
                 case Table.PublishingOrder:
@@ -73,8 +86,23 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(PublishingOrder.DateOrder_, PublishingOrder.DateOrder_);
                     dataGridView.Columns.Add(PublishingOrder.DateCompliting_, PublishingOrder.DateCompliting_);
                     dataGridView.Columns.Add(PublishingOrder.IdRepresentative_, PublishingOrder.IdRepresentative_);
-                    foreach (var item in Database.publishingOrders)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.publishingOrders)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.IntToString(item.IdPrintingHouse).Contains(search) ||
+                                OrderStatusHelper.EnumToString(item.Status).Contains(search) ||
+                                Converter.IntToString(item.IdPublication).Contains(search) ||
+                                Converter.DateTimeToString(item.DateOrder).Contains(search) ||
+                                Converter.DateTimeToString(item.DateCompliting).Contains(search) ||
+                                Converter.IntToString(item.IdRepresentative).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.publishingOrders)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative));
                     break;
 
                 case Table.Publication:
@@ -84,21 +112,52 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Publication.Type_, Publication.Type_);
                     dataGridView.Columns.Add(Publication.Size_, Publication.Size_);
                     dataGridView.Columns.Add(Publication.PrintingCount_, Publication.PrintingCount_);
-                    foreach (var item in Database.publications)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.publications)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.StringToDataBox(item.Name).Contains(search) ||
+                                Converter.StringToDataBox(item.Type).Contains(search) ||
+                                Converter.IntToString(item.Size).Contains(search) ||
+                                Converter.IntToString(item.PrintingCount).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.publications)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
                     break;
 
                 case Table.Entity:
                     header.Text = "Entity";
                     dataGridView.Columns.Add(Entity.Id_, Entity.Id_);
                     dataGridView.Columns.Add(Entity.Name_, Entity.Name_);
-                    foreach (var item in Database.entities)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.entities)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.StringToDataBox(item.Name).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.entities)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name));
                     break;
 
                 case Table.PublicationType:
                     header.Text = "Publication Type";
                     dataGridView.Columns.Add(PublicationType.Type_, PublicationType.Type_);
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.publicationTypes)
+                        {
+                            if (Converter.StringToDataBox(item.Type).Contains(search))
+                                dataGridView.Rows.Add(Converter.StringToDataBox(item.Type));
+                        }
+                    }
                     foreach (var item in Database.publicationTypes)
                         dataGridView.Rows.Add(Converter.StringToDataBox(item.Type));
                     break;
@@ -108,32 +167,74 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Login.Id_, Login.Id_);
                     dataGridView.Columns.Add(Login.Username_, Login.Username_);
                     dataGridView.Columns.Add(Login.Password_, Login.Password_);
-                    foreach (var item in Database.logins)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Username), Converter.StringToDataBox(item.Password));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.logins)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.StringToDataBox(item.Username).Contains(search) ||
+                                Converter.StringToDataBox(item.Password).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Username), Converter.StringToDataBox(item.Password));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.logins)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Username), Converter.StringToDataBox(item.Password));
                     break;
 
                 case Table.Author:
                     header.Text = "Author";
                     dataGridView.Columns.Add(Author.Id_, Author.Id_);
                     dataGridView.Columns.Add(Author.AdditionalInfo_, Author.AdditionalInfo_);
-                    foreach (var item in Database.authors)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.AdditionalInfo));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.authors)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                 Converter.StringToDataBox(item.AdditionalInfo).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.AdditionalInfo));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.authors)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.AdditionalInfo));
                     break;
 
                 case Table.Authorship:
                     header.Text = "Authorship";
                     dataGridView.Columns.Add(Authorship.IdAuthor_, Authorship.IdAuthor_);
                     dataGridView.Columns.Add(Authorship.IdPublication_, Authorship.IdPublication_);
-                    foreach (var item in Database.authorships)
-                        dataGridView.Rows.Add(Converter.IntToString(item.IdAuthor), Converter.IntToString(item.IdPublication));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.authorships)
+                        {
+                            if (Converter.IntToString(item.IdAuthor).Contains(search) ||
+                                 Converter.IntToString(item.IdPublication).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.IdAuthor), Converter.IntToString(item.IdPublication));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.authorships)
+                            dataGridView.Rows.Add(Converter.IntToString(item.IdAuthor), Converter.IntToString(item.IdPublication));
                     break;
                 case Table.PrintingHouse:
                     header.Text = "Printing House";
                     dataGridView.Columns.Add(PrintingHouse.Id_, PrintingHouse.Id_);
                     dataGridView.Columns.Add(PrintingHouse.Name_, PrintingHouse.Name_);
                     dataGridView.Columns.Add(PrintingHouse.Address_, PrintingHouse.Address_);
-                    foreach (var item in Database.printingHouses)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.printingHouses)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.StringToDataBox(item.Name).Contains(search) ||
+                                Converter.StringToDataBox(item.Address).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.printingHouses)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Address));
                     break;
 
                 case Table.Representative:
@@ -141,8 +242,19 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Representative.Id_, Representative.Id_);
                     dataGridView.Columns.Add(Representative.IdEntity_, Representative.IdEntity_);
                     dataGridView.Columns.Add(Representative.IdAuthor_, Representative.IdAuthor_);
-                    foreach (var item in Database.representatives)
-                        dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdEntity), Converter.IntToString(item.IdAuthor));
+                    if (!String.IsNullOrEmpty(search))
+                    {
+                        foreach (var item in Database.representatives)
+                        {
+                            if (Converter.IntToString(item.Id).Contains(search) ||
+                                Converter.IntToString(item.IdEntity).Contains(search) ||
+                                Converter.IntToString(item.IdAuthor).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdEntity), Converter.IntToString(item.IdAuthor));
+                        }
+                    }
+                    else
+                        foreach (var item in Database.representatives)
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdEntity), Converter.IntToString(item.IdAuthor));
                     break;
 
                 default: break;
@@ -167,43 +279,43 @@ namespace PublishingHouse
                     comboBox_Order_IDPublication.SelectedItem = null;
                     comboBox_Order_IDRepres.SelectedItem = null;
                     textBox_Order_ID.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.Id_].Value?.ToString());
-                    comboBox_Order_IDPH.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdPrintingHouse_].Value?.ToString();
-                    comboBox_Order_Status.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.OrderStatus_].Value?.ToString();
-                    comboBox_Order_IDPublication.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdPublication_].Value?.ToString();
+                    comboBox_Order_IDPH.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdPrintingHouse_].Value?.ToString());
+                    comboBox_Order_Status.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.OrderStatus_].Value?.ToString());
+                    comboBox_Order_IDPublication.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdPublication_].Value?.ToString());
                     dateTimePicker_Order_DateOrder.Value = Converter.StringToDateTime(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.DateOrder_].Value?.ToString());
                     dateTimePicker_Order_DateComp.Value = Converter.StringToDateTime(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.DateCompliting_].Value?.ToString());
-                    comboBox_Order_IDRepres.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdRepresentative_].Value?.ToString();
+                    comboBox_Order_IDRepres.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdRepresentative_].Value?.ToString());
                     break;
                 case Table.Publication:
                     comboBox_Publication_Type.SelectedItem = null;
                     textBox_Publication_ID.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Id_].Value?.ToString());
                     textBox_Publication_Name.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Name_].Value?.ToString());
-                    comboBox_Publication_Type.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[Publication.Type_].Value?.ToString();
-                    textBox_Publication_Size.Text = (dataGridViewMain.SelectedRows[0].Cells[Publication.Size_].Value != null) ? dataGridViewMain.SelectedRows[0].Cells[Publication.Size_].Value.ToString() : null;
-                    textBox_Publication_PrintingCount.Text = (dataGridViewMain.SelectedRows[0].Cells[Publication.PrintingCount_].Value != null) ? dataGridViewMain.SelectedRows[0].Cells[Publication.PrintingCount_].Value.ToString() : null;
+                    comboBox_Publication_Type.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Type_].Value?.ToString());
+                    textBox_Publication_Size.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Size_].Value?.ToString());
+                    textBox_Publication_PrintingCount.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.PrintingCount_].Value.ToString());
                     break;
                 case Table.Author:
                     comboBox_Author_ID.SelectedItem = null;
                     comboBox_Author_ID.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[Author.Id_].Value?.ToString();
-                    richTextBox_Author_Info.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Author.AdditionalInfo_].Value.ToString());
+                    richTextBox_Author_Info.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Author.AdditionalInfo_].Value?.ToString());
                     break;
                 case Table.Authorship:
                     comboBox_Authorship_IDAuthor.SelectedItem = null;
                     comboBox_Authorship_IDPublication.SelectedItem = null;
-                    comboBox_Authorship_IDAuthor.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[Authorship.IdAuthor_].Value?.ToString();
-                    comboBox_Authorship_IDPublication.SelectedItem = dataGridViewMain.SelectedRows[0].Cells[Authorship.IdPublication_].Value?.ToString();
+                    comboBox_Authorship_IDAuthor.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Authorship.IdAuthor_].Value?.ToString());
+                    comboBox_Authorship_IDPublication.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Authorship.IdPublication_].Value?.ToString());
                     break;
                 case Table.Entity:
-                    textBox_Entity_ID.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Entity.Id_].Value.ToString());
-                    textBox_Entity_Name.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Entity.Name_].Value.ToString());
+                    textBox_Entity_ID.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Entity.Id_].Value?.ToString());
+                    textBox_Entity_Name.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Entity.Name_].Value?.ToString());
                     break;
                 case Table.PublicationType:
-                    textBoxPublicationType.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublicationType.Type_].Value.ToString());
+                    textBoxPublicationType.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublicationType.Type_].Value?.ToString());
                     break;
                 case Table.PrintingHouse:
-                    textBox_PH_ID.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PrintingHouse.Id_].Value.ToString());
-                    textBox_PH_Name.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PrintingHouse.Name_].Value.ToString());
-                    richTextBox_PH_Address.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PrintingHouse.Address_].Value.ToString());
+                    textBox_PH_ID.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PrintingHouse.Id_].Value?.ToString());
+                    textBox_PH_Name.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PrintingHouse.Name_].Value?.ToString());
+                    richTextBox_PH_Address.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PrintingHouse.Address_].Value?.ToString());
                     break;
                 case Table.Login:
                     comboBox_Login_IDPH.SelectedItem = null;
@@ -211,22 +323,24 @@ namespace PublishingHouse
                     textBox_Login_Username.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Login.Username_].Value.ToString());
                     textBox_Login_Password.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Login.Password_].Value.ToString());
                     break;
-                    //TODO: add representative
-
+                case Table.Representative:
+                    comboBox_Representative_ID.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.Id_].Value?.ToString());
+                    comboBox_Representative_IDType.Items.Clear();
+                    if (!String.IsNullOrEmpty(Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.IdEntity_].Value.ToString())))
+                    {
+                        comboBox_Representative_Type.SelectedItem = "Entity";
+                        Database.entities.ForEach(x => comboBox_Representative_IDType.Items.Add(x.Id.ToString()));
+                        comboBox_Representative_IDType.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.IdEntity_].Value.ToString());
+                    }
+                    if (!String.IsNullOrEmpty(Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.IdAuthor_].Value.ToString())))
+                    {
+                        comboBox_Representative_Type.SelectedItem = "Author";
+                        Database.authors.ForEach(x => comboBox_Representative_IDType.Items.Add(x.Id.ToString()));
+                        comboBox_Representative_IDType.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.IdAuthor_].Value.ToString());
+                    }
+                    break;
             }
             buttonSaveChanges.Enabled = false;
-        }
-
-        private void ClearData()
-        {
-            dataGridViewMain.Rows.Clear();
-            dataGridViewMain.Columns.Clear();
-            dataGridViewAdd1.Rows.Clear();
-            dataGridViewAdd1.Columns.Clear();
-            dataGridViewAdd2.Rows.Clear();
-            dataGridViewAdd2.Columns.Clear();
-            dataGridViewAdd3.Rows.Clear();
-            dataGridViewAdd3.Columns.Clear();
         }
 
         private void dataGridViewMain_SelectionChanged(object sender, EventArgs e)
@@ -238,6 +352,7 @@ namespace PublishingHouse
 
         private void buttonSaveChanges_Click(object sender, EventArgs e)
         {
+            int s;
             switch (Session.Table)
             {
                 case Table.Person:
@@ -246,11 +361,19 @@ namespace PublishingHouse
                     person.Name = textBox_Person_Name.Text;
                     person.Address = richTextBox_Person_Address.Text;
                     person.Phone = textBox_Person_Phone.Text;
-                    Database.SaveToDatabase(Database.persons.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Id_].Value?.ToString())), person);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Id_].Value?.ToString()) != person.Id)
+                        foreach (var item in Database.persons)
+                            if (item.Id == person.Id)
+                            {
+                                MessageBox.Show($"Nonunique {Person.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.persons.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Id_].Value?.ToString())), person)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Id_].Value = Converter.StringToDataBox(textBox_Person_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Name_].Value = Converter.StringToDataBox(textBox_Person_Name.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Address_].Value = Converter.StringToDataBox(richTextBox_Person_Address.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Person.Phone_].Value = Converter.StringToDataBox(textBox_Person_Phone.Text);
+
                     break;
                 case Table.PublishingOrder:
                     PublishingOrder order = new PublishingOrder();
@@ -261,7 +384,14 @@ namespace PublishingHouse
                     order.DateOrder = dateTimePicker_Order_DateOrder.Value;
                     order.DateCompliting = dateTimePicker_Order_DateComp.Value;
                     order.IdRepresentative = Converter.StringToInt(comboBox_Order_IDRepres.SelectedItem?.ToString());
-                    Database.SaveToDatabase(Database.publishingOrders.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value?.ToString())), order);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value?.ToString()) != order.Id)
+                        foreach (var item in Database.publishingOrders)
+                            if (item.Id == order.Id)
+                            {
+                                MessageBox.Show($"Nonunique {PublishingOrder.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.publishingOrders.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value?.ToString())), order)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value = Converter.StringToDataBox(textBox_Order_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPrintingHouse_].Value = Converter.StringToDataBox(comboBox_Order_IDPH.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.OrderStatus_].Value = Converter.StringToDataBox(comboBox_Order_Status.SelectedItem?.ToString());
@@ -277,7 +407,14 @@ namespace PublishingHouse
                     publication.Type = comboBox_Publication_Type.SelectedItem?.ToString();
                     publication.Size = Converter.StringToInt(textBox_Publication_Size.Text);
                     publication.PrintingCount = Converter.StringToInt(textBox_Publication_PrintingCount.Text);
-                    Database.SaveToDatabase(Database.publications.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value?.ToString())), publication);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value?.ToString()) != publication.Id)
+                        foreach (var item in Database.publications)
+                            if (item.Id == publication.Id)
+                            {
+                                MessageBox.Show($"Nonunique {Publication.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.publications.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value?.ToString())), publication)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value = Converter.StringToDataBox(textBox_Publication_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Name_].Value = Converter.StringToDataBox(textBox_Publication_Name.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Type_].Value = Converter.StringToDataBox(comboBox_Publication_Type.SelectedItem?.ToString());
@@ -288,7 +425,14 @@ namespace PublishingHouse
                     Author author = new Author();
                     author.Id = Converter.StringToInt(comboBox_Author_ID.SelectedItem?.ToString());
                     author.AdditionalInfo = richTextBox_Author_Info.Text;
-                    Database.SaveToDatabase(Database.authors.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value?.ToString())), author);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value?.ToString()) != author.Id)
+                        foreach (var item in Database.authors)
+                            if (item.Id == author.Id)
+                            {
+                                MessageBox.Show($"Nonunique {Author.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.authors.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value?.ToString())), author)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.Id_].Value = Converter.StringToDataBox(comboBox_Author_ID.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Author.AdditionalInfo_].Value = Converter.StringToDataBox(richTextBox_Author_Info.Text);
                     break;
@@ -296,22 +440,44 @@ namespace PublishingHouse
                     Authorship authorship = new Authorship();
                     authorship.IdAuthor = Converter.StringToInt(comboBox_Authorship_IDAuthor.SelectedItem?.ToString());
                     authorship.IdPublication = Converter.StringToInt(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
-                    Database.SaveToDatabase(Database.authorships.FirstOrDefault(x => x.IdPublication == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value?.ToString()) && x.IdAuthor == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value?.ToString())), authorship);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value?.ToString()) != authorship.IdAuthor ||
+                        Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value?.ToString()) != authorship.IdPublication)
+                        foreach (var item in Database.authorships)
+                            if (item.IdAuthor == authorship.IdAuthor && item.IdPublication == authorship.IdPublication)
+                            {
+                                MessageBox.Show($"Nonunique {Authorship.IdPublication_} or {Authorship.IdAuthor_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.authorships.FirstOrDefault(x => x.IdPublication == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value?.ToString()) && x.IdAuthor == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value?.ToString())), authorship)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdAuthor_].Value = Converter.StringToDataBox(comboBox_Authorship_IDAuthor.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Authorship.IdPublication_].Value = Converter.StringToDataBox(comboBox_Authorship_IDPublication.SelectedItem?.ToString());
                     break;
                 case Table.Entity:
                     Entity entity = new Entity();
-                    entity.Id = int.Parse(textBox_Entity_ID.Text);
+                    entity.Id = Converter.StringToInt(textBox_Entity_ID.Text);
                     entity.Name = textBox_Entity_Name.Text;
-                    Database.SaveToDatabase(Database.entities.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value?.ToString())), entity);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value?.ToString()) != entity.Id)
+                        foreach (var item in Database.entities)
+                            if (item.Id == entity.Id)
+                            {
+                                MessageBox.Show($"Nonunique {Entity.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.entities.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value?.ToString())), entity)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Id_].Value = Converter.StringToDataBox(textBox_Entity_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Entity.Name_].Value = Converter.StringToDataBox(textBox_Entity_Name.Text);
                     break;
                 case Table.PublicationType:
                     PublicationType publicationType = new PublicationType();
                     publicationType.Type = textBoxPublicationType.Text;
-                    Database.SaveToDatabase(Database.publicationTypes.FirstOrDefault(x => x.Type == Converter.DataToString(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value?.ToString())), publicationType);
+                    if (Converter.DataToString(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value?.ToString()) != publicationType.Type)
+                        foreach (var item in Database.publicationTypes)
+                            if (item.Type == publicationType.Type)
+                            {
+                                MessageBox.Show($"Nonunique {PublicationType.Type_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.publicationTypes.FirstOrDefault(x => x.Type == Converter.DataToString(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value?.ToString())), publicationType)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublicationType.Type_].Value = Converter.StringToDataBox(textBoxPublicationType.Text);
                     break;
                 case Table.PrintingHouse:
@@ -319,7 +485,14 @@ namespace PublishingHouse
                     printingHouse.Id = Converter.StringToInt(textBox_PH_ID.Text);
                     printingHouse.Name = textBox_PH_Name.Text;
                     printingHouse.Address = richTextBox_PH_Address.Text;
-                    Database.SaveToDatabase(Database.printingHouses.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value?.ToString())), printingHouse);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value?.ToString()) != printingHouse.Id)
+                        foreach (var item in Database.printingHouses)
+                            if (item.Id == printingHouse.Id)
+                            {
+                                MessageBox.Show($"Nonunique {PrintingHouse.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.printingHouses.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value?.ToString())), printingHouse)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Id_].Value = Converter.StringToDataBox(textBox_PH_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Name_].Value = Converter.StringToDataBox(textBox_PH_Name.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PrintingHouse.Address_].Value = Converter.StringToDataBox(richTextBox_PH_Address.Text);
@@ -329,12 +502,37 @@ namespace PublishingHouse
                     login.Id = Converter.StringToInt(comboBox_Login_IDPH.SelectedItem?.ToString());
                     login.Username = textBox_Login_Username.Text;
                     login.Password = textBox_Login_Password.Text;
-                    Database.SaveToDatabase(Database.logins.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value?.ToString())), login);
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value?.ToString()) != login.Id)
+                        foreach (var item in Database.logins)
+                            if (item.Id == login.Id)
+                            {
+                                MessageBox.Show($"Nonunique {Login.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.logins.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value?.ToString())), login)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Id_].Value = Converter.StringToDataBox(comboBox_Login_IDPH.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Username_].Value = Converter.StringToDataBox(textBox_Login_Username.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Login.Password_].Value = Converter.StringToDataBox(textBox_Login_Password.Text);
                     break;
-                    //TODO: add representative
+                case Table.Representative:
+                    Representative representative = new Representative();
+                    representative.Id = Converter.StringToInt(comboBox_Representative_ID.SelectedItem?.ToString());
+                    if (comboBox_Representative_Type.SelectedItem == "Entity")
+                        representative.IdEntity = Converter.StringToInt(comboBox_Representative_IDType.SelectedItem?.ToString());
+                    if (comboBox_Representative_Type.SelectedItem == "Author")
+                        representative.IdAuthor = Converter.StringToInt(comboBox_Representative_IDType.SelectedItem?.ToString());
+                    if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Representative.Id_].Value?.ToString()) != representative.Id)
+                        foreach (var item in Database.representatives)
+                            if (item.Id == representative.Id)
+                            {
+                                MessageBox.Show($"Nonunique {Representative.Id_}");
+                                return;
+                            }
+                    if (!Database.SaveToDatabase(Database.representatives.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Representative.Id_].Value?.ToString())), representative)) return;
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Representative.Id_].Value = Converter.IntToString(representative.Id);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Representative.IdAuthor_].Value = Converter.IntToString(representative.IdAuthor);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Representative.IdEntity_].Value = Converter.IntToString(representative.IdEntity);
+                    break;
             }
             buttonSaveChanges.Enabled = false;
         }
@@ -348,7 +546,6 @@ namespace PublishingHouse
         {
             Session.Table = Table.PublishingOrder;
             HideBoxes();
-            ClearData();
             groupBoxOrder.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
             LoadDataGridView(dataGridViewAdd1, Table.Publication, labelAddData1);
@@ -370,10 +567,11 @@ namespace PublishingHouse
         {
             Session.Table = Table.Publication;
             HideBoxes();
-            ClearData();
             ClearLabels();
             groupBoxPublication.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            LoadDataGridView(dataGridViewAdd1, Table.PublicationType, labelAddData1);
+            LoadDataGridView(dataGridViewAdd2, Table.Authorship, labelAddData2);
 
             comboBox_Publication_Type.Items.Clear();
             Database.publicationTypes.ForEach(x => comboBox_Publication_Type.Items.Add(x.Type));
@@ -384,10 +582,14 @@ namespace PublishingHouse
         {
             Session.Table = Table.Representative;
             HideBoxes();
-            ClearData();
             ClearLabels();
             groupBoxRepresentative.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            LoadDataGridView(dataGridViewAdd1, Table.Person, labelAddData1);
+            LoadDataGridView(dataGridViewAdd2, Table.Author, labelAddData2);
+            LoadDataGridView(dataGridViewAdd3, Table.Entity, labelAddData3);
+            comboBox_Representative_ID.Items.Clear();
+            Database.persons.ForEach(x => comboBox_Representative_ID.Items.Add(x.Id.ToString()));
             LoadBox();
         }
 
@@ -395,7 +597,6 @@ namespace PublishingHouse
         {
             Session.Table = Table.Person;
             HideBoxes();
-            ClearData();
             ClearLabels();
             groupBoxPerson.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
@@ -406,9 +607,10 @@ namespace PublishingHouse
         {
             Session.Table = Table.Author;
             HideBoxes();
-            ClearData();
             groupBoxAuthor.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            LoadDataGridView(dataGridViewAdd1, Table.Person, labelAddData1);
+            LoadDataGridView(dataGridViewAdd2, Table.Authorship, labelAddData2);
 
             comboBox_Author_ID.Items.Clear();
             Database.persons.ForEach(x => comboBox_Author_ID.Items.Add(x.Id.ToString()));
@@ -419,9 +621,10 @@ namespace PublishingHouse
         {
             Session.Table = Table.Authorship;
             HideBoxes();
-            ClearData();
             groupBoxAuthorship.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            LoadDataGridView(dataGridViewAdd1, Table.Author, labelAddData1);
+            LoadDataGridView(dataGridViewAdd2, Table.Publication, labelAddData2);
 
             comboBox_Authorship_IDAuthor.Items.Clear();
             Database.authors.ForEach(x => comboBox_Authorship_IDAuthor.Items.Add(x.Id.ToString()));
@@ -435,7 +638,6 @@ namespace PublishingHouse
         {
             Session.Table = Table.Entity;
             HideBoxes();
-            ClearData();
             groupBoxEntity.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
             LoadBox();
@@ -445,7 +647,6 @@ namespace PublishingHouse
         {
             Session.Table = Table.PublicationType;
             HideBoxes();
-            ClearData();
             groupBoxPublicationType.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
             LoadBox();
@@ -455,7 +656,6 @@ namespace PublishingHouse
         {
             Session.Table = Table.PrintingHouse;
             HideBoxes();
-            ClearData();
             groupBoxPrintingHouse.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
             LoadBox();
@@ -465,9 +665,9 @@ namespace PublishingHouse
         {
             Session.Table = Table.Login;
             HideBoxes();
-            ClearData();
             groupBoxLogin.Visible = true;
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            LoadDataGridView(dataGridViewAdd1, Table.PrintingHouse, labelAddData1);
             comboBox_Login_IDPH.Items.Clear();
             Database.printingHouses.ForEach(x => comboBox_Login_IDPH.Items.Add(x.Id.ToString()));
             LoadBox();
@@ -489,69 +689,47 @@ namespace PublishingHouse
                 case Table.Person:
                     Person person = new Person();
                     Database.persons.Add(person);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.PublishingOrder:
                     PublishingOrder order = new PublishingOrder();
                     Database.publishingOrders.Add(order);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.Publication:
                     Publication publication = new Publication();
                     Database.publications.Add(publication);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.Author:
                     Author author = new Author();
                     Database.authors.Add(author);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.Authorship:
                     Authorship authorship = new Authorship();
                     Database.authorships.Add(authorship);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.Entity:
                     Entity entity = new Entity();
                     Database.entities.Add(entity);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.PublicationType:
                     PublicationType publicationType = new PublicationType();
                     Database.publicationTypes.Add(publicationType);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.PrintingHouse:
                     PrintingHouse printingHouse = new PrintingHouse();
                     Database.printingHouses.Add(printingHouse);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
                 case Table.Login:
                     Login login = new Login();
                     Database.logins.Add(login);
-                    LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
-                    dataGridViewMain.ClearSelection();
-                    dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
                     break;
-                    //TODO: add representative
-
+                case Table.Representative:
+                    Representative representative = new Representative();
+                    Database.representatives.Add(representative);
+                    break;
             }
+            LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
+            dataGridViewMain.ClearSelection();
+            dataGridViewMain.Rows[dataGridViewMain.Rows.Count - 1].Selected = true;
         }
 
         private void buttonDelete_Click(object sender, EventArgs e)
@@ -653,6 +831,32 @@ namespace PublishingHouse
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData);
             dataGridViewMain.ClearSelection();
             dataGridViewMain.Rows[0].Selected = true;
+        }
+
+        private void textBox_OnlyNumber_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+        private void comboBox_Representative_Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBox_Representative_IDType.SelectedItem = null;
+            comboBox_Representative_IDType.Items.Clear();
+            if (comboBox_Representative_Type.SelectedItem == "Entity")
+            {
+                Database.entities.ForEach(x => comboBox_Representative_IDType.Items.Add(x.Id.ToString()));
+                comboBox_Representative_IDType.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.IdEntity_].Value.ToString());
+            }
+            if (comboBox_Representative_Type.SelectedItem == "Author")
+            {
+                Database.authors.ForEach(x => comboBox_Representative_IDType.Items.Add(x.Id.ToString()));
+                comboBox_Representative_IDType.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Representative.IdAuthor_].Value.ToString());
+            }
+        }
+
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            LoadDataGridView(dataGridViewMain, Session.Table, labelMainData, textBoxSearch.Text);
         }
     }
 }
