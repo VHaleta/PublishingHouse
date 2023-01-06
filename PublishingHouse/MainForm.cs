@@ -86,23 +86,27 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(PublishingOrder.DateOrder_, PublishingOrder.DateOrder_);
                     dataGridView.Columns.Add(PublishingOrder.DateCompliting_, PublishingOrder.DateCompliting_);
                     dataGridView.Columns.Add(PublishingOrder.IdRepresentative_, PublishingOrder.IdRepresentative_);
+                    dataGridView.Columns.Add(PublishingOrder.PrintingCount_, PublishingOrder.PrintingCount_);
                     if (!String.IsNullOrEmpty(search))
                     {
                         foreach (var item in Database.publishingOrders)
                         {
-                            if (Converter.IntToString(item.Id).Contains(search) ||
+                            if ((Converter.IntToString(item.Id).Contains(search) ||
                                 Converter.IntToString(item.IdPrintingHouse).Contains(search) ||
                                 OrderStatusHelper.EnumToString(item.Status).Contains(search) ||
                                 Converter.IntToString(item.IdPublication).Contains(search) ||
                                 Converter.DateTimeToString(item.DateOrder).Contains(search) ||
                                 Converter.DateTimeToString(item.DateCompliting).Contains(search) ||
-                                Converter.IntToString(item.IdRepresentative).Contains(search))
-                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative));
+                                Converter.IntToString(item.IdRepresentative).Contains(search) ||
+                                Converter.IntToString(item.PrintingCount).Contains(search)) &&
+                                (Session.IDph == 0 || Session.IDph == item.IdPrintingHouse))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative), Converter.IntToString(item.PrintingCount));
                         }
                     }
                     else
                         foreach (var item in Database.publishingOrders)
-                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative));
+                            if (Session.IDph == 0 || Session.IDph == item.IdPrintingHouse)
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.IntToString(item.IdPrintingHouse), item.Status, Converter.IntToString(item.IdPublication), Converter.DateTimeToString(item.DateOrder), Converter.DateTimeToString(item.DateCompliting), Converter.IntToString(item.IdRepresentative), Converter.IntToString(item.PrintingCount));
                     break;
 
                 case Table.Publication:
@@ -111,7 +115,6 @@ namespace PublishingHouse
                     dataGridView.Columns.Add(Publication.Name_, Publication.Name_);
                     dataGridView.Columns.Add(Publication.Type_, Publication.Type_);
                     dataGridView.Columns.Add(Publication.Size_, Publication.Size_);
-                    dataGridView.Columns.Add(Publication.PrintingCount_, Publication.PrintingCount_);
                     if (!String.IsNullOrEmpty(search))
                     {
                         foreach (var item in Database.publications)
@@ -119,14 +122,13 @@ namespace PublishingHouse
                             if (Converter.IntToString(item.Id).Contains(search) ||
                                 Converter.StringToDataBox(item.Name).Contains(search) ||
                                 Converter.StringToDataBox(item.Type).Contains(search) ||
-                                Converter.IntToString(item.Size).Contains(search) ||
-                                Converter.IntToString(item.PrintingCount).Contains(search))
-                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
+                                Converter.IntToString(item.Size).Contains(search))
+                                dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size));
                         }
                     }
                     else
                         foreach (var item in Database.publications)
-                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size), Converter.IntToString(item.PrintingCount));
+                            dataGridView.Rows.Add(Converter.IntToString(item.Id), Converter.StringToDataBox(item.Name), Converter.StringToDataBox(item.Type), Converter.IntToString(item.Size));
                     break;
 
                 case Table.Entity:
@@ -285,6 +287,7 @@ namespace PublishingHouse
                     dateTimePicker_Order_DateOrder.Value = Converter.StringToDateTime(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.DateOrder_].Value?.ToString());
                     dateTimePicker_Order_DateComp.Value = Converter.StringToDateTime(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.DateCompliting_].Value?.ToString());
                     comboBox_Order_IDRepres.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.IdRepresentative_].Value?.ToString());
+                    textBox_Order_PrintingCount.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[PublishingOrder.PrintingCount_].Value.ToString());
                     break;
                 case Table.Publication:
                     comboBox_Publication_Type.SelectedItem = null;
@@ -292,7 +295,6 @@ namespace PublishingHouse
                     textBox_Publication_Name.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Name_].Value?.ToString());
                     comboBox_Publication_Type.SelectedItem = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Type_].Value?.ToString());
                     textBox_Publication_Size.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.Size_].Value?.ToString());
-                    textBox_Publication_PrintingCount.Text = Converter.DataToString(dataGridViewMain.SelectedRows[0].Cells[Publication.PrintingCount_].Value.ToString());
                     break;
                 case Table.Author:
                     comboBox_Author_ID.SelectedItem = null;
@@ -352,7 +354,6 @@ namespace PublishingHouse
 
         private void buttonSaveChanges_Click(object sender, EventArgs e)
         {
-            int s;
             switch (Session.Table)
             {
                 case Table.Person:
@@ -384,6 +385,7 @@ namespace PublishingHouse
                     order.DateOrder = dateTimePicker_Order_DateOrder.Value;
                     order.DateCompliting = dateTimePicker_Order_DateComp.Value;
                     order.IdRepresentative = Converter.StringToInt(comboBox_Order_IDRepres.SelectedItem?.ToString());
+                    order.PrintingCount = Converter.StringToInt(textBox_Order_PrintingCount.Text);
                     if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value?.ToString()) != order.Id)
                         foreach (var item in Database.publishingOrders)
                             if (item.Id == order.Id)
@@ -391,14 +393,20 @@ namespace PublishingHouse
                                 MessageBox.Show($"Nonunique {PublishingOrder.Id_}");
                                 return;
                             }
+                    if (Session.IDph != 0 && order.IdPrintingHouse != Session.IDph)
+                    {
+                        MessageBox.Show($"You can't add orders for other PublishingHouses");
+                        return;
+                    }
                     if (!Database.SaveToDatabase(Database.publishingOrders.FirstOrDefault(x => x.Id == Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value?.ToString())), order)) return;
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.Id_].Value = Converter.StringToDataBox(textBox_Order_ID.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPrintingHouse_].Value = Converter.StringToDataBox(comboBox_Order_IDPH.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.OrderStatus_].Value = Converter.StringToDataBox(comboBox_Order_Status.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdPublication_].Value = Converter.StringToDataBox(comboBox_Order_IDPublication.SelectedItem?.ToString());
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateOrder_].Value = dateTimePicker_Order_DateOrder.Value.ToString("dd.MM.yyyy");
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateCompliting_].Value = dateTimePicker_Order_DateComp.Value.ToString("dd.MM.yyyy");
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateOrder_].Value = Converter.DateTimeToString(dateTimePicker_Order_DateOrder.Value);
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.DateCompliting_].Value = Converter.DateTimeToString(dateTimePicker_Order_DateComp.Value);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.IdRepresentative_].Value = Converter.StringToDataBox(comboBox_Order_IDRepres.SelectedItem?.ToString());
+                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[PublishingOrder.PrintingCount_].Value = Converter.StringToDataBox(textBox_Order_PrintingCount.Text);
                     break;
                 case Table.Publication:
                     Publication publication = new Publication();
@@ -406,7 +414,6 @@ namespace PublishingHouse
                     publication.Name = textBox_Publication_Name.Text;
                     publication.Type = comboBox_Publication_Type.SelectedItem?.ToString();
                     publication.Size = Converter.StringToInt(textBox_Publication_Size.Text);
-                    publication.PrintingCount = Converter.StringToInt(textBox_Publication_PrintingCount.Text);
                     if (Converter.StringToInt(dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Id_].Value?.ToString()) != publication.Id)
                         foreach (var item in Database.publications)
                             if (item.Id == publication.Id)
@@ -419,7 +426,6 @@ namespace PublishingHouse
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Name_].Value = Converter.StringToDataBox(textBox_Publication_Name.Text);
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Type_].Value = Converter.StringToDataBox(comboBox_Publication_Type.SelectedItem?.ToString());
                     dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.Size_].Value = Converter.StringToDataBox(textBox_Publication_Size.Text);
-                    dataGridViewMain.Rows[dataGridViewMain.SelectedCells[0].RowIndex].Cells[Publication.PrintingCount_].Value = Converter.StringToDataBox(textBox_Publication_PrintingCount.Text);
                     break;
                 case Table.Author:
                     Author author = new Author();
@@ -857,6 +863,94 @@ namespace PublishingHouse
         private void buttonSearch_Click(object sender, EventArgs e)
         {
             LoadDataGridView(dataGridViewMain, Session.Table, labelMainData, textBoxSearch.Text);
+        }
+
+        private void publicationStatistics_mmi_Click(object sender, EventArgs e)
+        {
+            StatisticsForm statisticsForm = new StatisticsForm(Table.Publication);
+            try
+            {
+                statisticsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void authorshipStatistics_mmi_Click(object sender, EventArgs e)
+        {
+            StatisticsForm statisticsForm = new StatisticsForm(Table.Authorship);
+            try
+            {
+                statisticsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void representativeStatistics_mmi_Click(object sender, EventArgs e)
+        {
+            StatisticsForm statisticsForm = new StatisticsForm(Table.Representative);
+            try
+            {
+                statisticsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void orderStatistics_mmi_Click(object sender, EventArgs e)
+        {
+            StatisticsForm statisticsForm = new StatisticsForm(Table.PublishingOrder);
+            try
+            {
+                statisticsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void authorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StatisticsForm statisticsForm = new StatisticsForm(Table.Author);
+            try
+            {
+                statisticsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void publishingHousesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StatisticsForm statisticsForm = new StatisticsForm(Table.PrintingHouse);
+            try
+            {
+                statisticsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void buttonClearDateOrder_Click(object sender, EventArgs e)
+        {
+            dateTimePicker_Order_DateOrder.Value = Converter.StringToDateTime(null);
+        }
+
+        private void buttonClearDateComp_Click(object sender, EventArgs e)
+        {
+            dateTimePicker_Order_DateComp.Value = Converter.StringToDateTime(null);
         }
     }
 }

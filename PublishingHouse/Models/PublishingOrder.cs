@@ -16,6 +16,8 @@ namespace PublishingHouse.Models
         public const string DateOrder_ = "DateOrder";
         public const string DateCompliting_ = "DateComp";
         public const string IdRepresentative_ = "ID_Representative";
+        public const string PrintingCount_ = "PrintingCount";
+
         public int Id { get; set; }
         public int IdPrintingHouse { get; set; }
         public OrderStatus Status { get; set; }
@@ -23,6 +25,6 @@ namespace PublishingHouse.Models
         public DateTime DateOrder { get; set; }
         public DateTime DateCompliting { get; set; }
         public int IdRepresentative { get; set; }
-
+        public int PrintingCount { get; set; }
     }
 }

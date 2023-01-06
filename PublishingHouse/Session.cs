@@ -11,7 +11,6 @@ namespace PublishingHouse
     {
         public static int IDph { get; set; }
         public static Table Table { get; set; }
-        public static bool CurrentAdding { get; set; }
 
     }
 }

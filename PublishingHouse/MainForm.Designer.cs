@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.goToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.order_mmi = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,13 +41,24 @@
             this.publicationType_mmi = new System.Windows.Forms.ToolStripMenuItem();
             this.printingHouse_mmi = new System.Windows.Forms.ToolStripMenuItem();
             this.login_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orderStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.publicationStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.authorshipStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.representativeStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
+            this.authorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.publishingHousesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridViewMain = new System.Windows.Forms.DataGridView();
             this.labelMainData = new System.Windows.Forms.Label();
             this.groupBoxOrder = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.buttonClearDateComp = new System.Windows.Forms.Button();
+            this.buttonClearDateOrder = new System.Windows.Forms.Button();
             this.dateTimePicker_Order_DateComp = new System.Windows.Forms.DateTimePicker();
             this.dateTimePicker_Order_DateOrder = new System.Windows.Forms.DateTimePicker();
             this.comboBox_Order_Status = new System.Windows.Forms.ComboBox();
             this.comboBox_Order_IDPH = new System.Windows.Forms.ComboBox();
+            this.textBox_Order_PrintingCount = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -86,13 +98,11 @@
             this.buttonSaveChanges = new System.Windows.Forms.Button();
             this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.groupBoxPublication = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.comboBox_Publication_Type = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.textBox_Publication_PrintingCount = new System.Windows.Forms.TextBox();
             this.textBox_Publication_Size = new System.Windows.Forms.TextBox();
             this.textBox_Publication_Name = new System.Windows.Forms.TextBox();
             this.textBox_Publication_ID = new System.Windows.Forms.TextBox();
@@ -127,11 +137,6 @@
             this.buttonAddNew = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
             this.buttonSearch = new System.Windows.Forms.Button();
-            this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.orderStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
-            this.publicationStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
-            this.authorshipStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
-            this.representativeStatistics_mmi = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMain)).BeginInit();
             this.groupBoxOrder.SuspendLayout();
@@ -249,6 +254,61 @@
             this.login_mmi.Text = "Login";
             this.login_mmi.Click += new System.EventHandler(this.login_mmi_Click);
             // 
+            // statisticsToolStripMenuItem
+            // 
+            this.statisticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.orderStatistics_mmi,
+            this.publicationStatistics_mmi,
+            this.authorshipStatistics_mmi,
+            this.representativeStatistics_mmi,
+            this.authorsToolStripMenuItem,
+            this.publishingHousesToolStripMenuItem});
+            this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(117, 27);
+            this.statisticsToolStripMenuItem.Text = "Statistics";
+            // 
+            // orderStatistics_mmi
+            // 
+            this.orderStatistics_mmi.Name = "orderStatistics_mmi";
+            this.orderStatistics_mmi.Size = new System.Drawing.Size(277, 28);
+            this.orderStatistics_mmi.Text = "Publishing Order";
+            this.orderStatistics_mmi.Click += new System.EventHandler(this.orderStatistics_mmi_Click);
+            // 
+            // publicationStatistics_mmi
+            // 
+            this.publicationStatistics_mmi.Name = "publicationStatistics_mmi";
+            this.publicationStatistics_mmi.Size = new System.Drawing.Size(277, 28);
+            this.publicationStatistics_mmi.Text = "Publication";
+            this.publicationStatistics_mmi.Click += new System.EventHandler(this.publicationStatistics_mmi_Click);
+            // 
+            // authorshipStatistics_mmi
+            // 
+            this.authorshipStatistics_mmi.Name = "authorshipStatistics_mmi";
+            this.authorshipStatistics_mmi.Size = new System.Drawing.Size(277, 28);
+            this.authorshipStatistics_mmi.Text = "Authorship";
+            this.authorshipStatistics_mmi.Click += new System.EventHandler(this.authorshipStatistics_mmi_Click);
+            // 
+            // representativeStatistics_mmi
+            // 
+            this.representativeStatistics_mmi.Name = "representativeStatistics_mmi";
+            this.representativeStatistics_mmi.Size = new System.Drawing.Size(277, 28);
+            this.representativeStatistics_mmi.Text = "Representatives";
+            this.representativeStatistics_mmi.Click += new System.EventHandler(this.representativeStatistics_mmi_Click);
+            // 
+            // authorsToolStripMenuItem
+            // 
+            this.authorsToolStripMenuItem.Name = "authorsToolStripMenuItem";
+            this.authorsToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
+            this.authorsToolStripMenuItem.Text = "Authors";
+            this.authorsToolStripMenuItem.Click += new System.EventHandler(this.authorsToolStripMenuItem_Click);
+            // 
+            // publishingHousesToolStripMenuItem
+            // 
+            this.publishingHousesToolStripMenuItem.Name = "publishingHousesToolStripMenuItem";
+            this.publishingHousesToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
+            this.publishingHousesToolStripMenuItem.Text = "PublishingHouses";
+            this.publishingHousesToolStripMenuItem.Click += new System.EventHandler(this.publishingHousesToolStripMenuItem_Click);
+            // 
             // dataGridViewMain
             // 
             this.dataGridViewMain.AllowUserToAddRows = false;
@@ -275,10 +335,14 @@
             // 
             // groupBoxOrder
             // 
+            this.groupBoxOrder.Controls.Add(this.label10);
+            this.groupBoxOrder.Controls.Add(this.buttonClearDateComp);
+            this.groupBoxOrder.Controls.Add(this.buttonClearDateOrder);
             this.groupBoxOrder.Controls.Add(this.dateTimePicker_Order_DateComp);
             this.groupBoxOrder.Controls.Add(this.dateTimePicker_Order_DateOrder);
             this.groupBoxOrder.Controls.Add(this.comboBox_Order_Status);
             this.groupBoxOrder.Controls.Add(this.comboBox_Order_IDPH);
+            this.groupBoxOrder.Controls.Add(this.textBox_Order_PrintingCount);
             this.groupBoxOrder.Controls.Add(this.label7);
             this.groupBoxOrder.Controls.Add(this.label6);
             this.groupBoxOrder.Controls.Add(this.label5);
@@ -289,13 +353,42 @@
             this.groupBoxOrder.Controls.Add(this.label2);
             this.groupBoxOrder.Controls.Add(this.comboBox_Order_IDRepres);
             this.groupBoxOrder.Controls.Add(this.textBox_Order_ID);
-            this.groupBoxOrder.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxOrder.Location = new System.Drawing.Point(866, 62);
             this.groupBoxOrder.Name = "groupBoxOrder";
-            this.groupBoxOrder.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxOrder.Size = new System.Drawing.Size(422, 334);
             this.groupBoxOrder.TabIndex = 3;
             this.groupBoxOrder.TabStop = false;
             this.groupBoxOrder.Text = "Order";
             this.groupBoxOrder.TextChanged += new System.EventHandler(this.ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(29, 296);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(155, 23);
+            this.label10.TabIndex = 8;
+            this.label10.Text = "Printing count";
+            // 
+            // buttonClearDateComp
+            // 
+            this.buttonClearDateComp.Location = new System.Drawing.Point(166, 211);
+            this.buttonClearDateComp.Name = "buttonClearDateComp";
+            this.buttonClearDateComp.Size = new System.Drawing.Size(32, 40);
+            this.buttonClearDateComp.TabIndex = 12;
+            this.buttonClearDateComp.Text = "×";
+            this.buttonClearDateComp.UseVisualStyleBackColor = true;
+            this.buttonClearDateComp.Click += new System.EventHandler(this.buttonClearDateComp_Click);
+            // 
+            // buttonClearDateOrder
+            // 
+            this.buttonClearDateOrder.Location = new System.Drawing.Point(166, 172);
+            this.buttonClearDateOrder.Name = "buttonClearDateOrder";
+            this.buttonClearDateOrder.Size = new System.Drawing.Size(32, 40);
+            this.buttonClearDateOrder.TabIndex = 11;
+            this.buttonClearDateOrder.Text = "×";
+            this.buttonClearDateOrder.UseVisualStyleBackColor = true;
+            this.buttonClearDateOrder.Click += new System.EventHandler(this.buttonClearDateOrder_Click);
             // 
             // dateTimePicker_Order_DateComp
             // 
@@ -335,6 +428,15 @@
             this.comboBox_Order_IDPH.TabIndex = 9;
             this.comboBox_Order_IDPH.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
             this.comboBox_Order_IDPH.TextChanged += new System.EventHandler(this.ValueChanged);
+            // 
+            // textBox_Order_PrintingCount
+            // 
+            this.textBox_Order_PrintingCount.Location = new System.Drawing.Point(241, 293);
+            this.textBox_Order_PrintingCount.Name = "textBox_Order_PrintingCount";
+            this.textBox_Order_PrintingCount.Size = new System.Drawing.Size(159, 31);
+            this.textBox_Order_PrintingCount.TabIndex = 7;
+            this.textBox_Order_PrintingCount.TextChanged += new System.EventHandler(this.ValueChanged);
+            this.textBox_Order_PrintingCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // label7
             // 
@@ -433,9 +535,9 @@
             this.groupBoxAuthor.Controls.Add(this.richTextBox_Author_Info);
             this.groupBoxAuthor.Controls.Add(this.label1);
             this.groupBoxAuthor.Controls.Add(this.label24);
-            this.groupBoxAuthor.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxAuthor.Location = new System.Drawing.Point(866, 62);
             this.groupBoxAuthor.Name = "groupBoxAuthor";
-            this.groupBoxAuthor.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxAuthor.Size = new System.Drawing.Size(422, 334);
             this.groupBoxAuthor.TabIndex = 3;
             this.groupBoxAuthor.TabStop = false;
             this.groupBoxAuthor.Text = "Author";
@@ -483,9 +585,9 @@
             this.groupBoxEntity.Controls.Add(this.textBox_Entity_Name);
             this.groupBoxEntity.Controls.Add(this.label26);
             this.groupBoxEntity.Controls.Add(this.label27);
-            this.groupBoxEntity.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxEntity.Location = new System.Drawing.Point(866, 62);
             this.groupBoxEntity.Name = "groupBoxEntity";
-            this.groupBoxEntity.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxEntity.Size = new System.Drawing.Size(422, 334);
             this.groupBoxEntity.TabIndex = 12;
             this.groupBoxEntity.TabStop = false;
             this.groupBoxEntity.Text = "Entity";
@@ -533,9 +635,9 @@
             this.groupBoxPrintingHouse.Controls.Add(this.label20);
             this.groupBoxPrintingHouse.Controls.Add(this.label21);
             this.groupBoxPrintingHouse.Controls.Add(this.label22);
-            this.groupBoxPrintingHouse.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxPrintingHouse.Location = new System.Drawing.Point(866, 62);
             this.groupBoxPrintingHouse.Name = "groupBoxPrintingHouse";
-            this.groupBoxPrintingHouse.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxPrintingHouse.Size = new System.Drawing.Size(422, 334);
             this.groupBoxPrintingHouse.TabIndex = 3;
             this.groupBoxPrintingHouse.TabStop = false;
             this.groupBoxPrintingHouse.Text = "Printing House";
@@ -603,9 +705,9 @@
             this.groupBoxPerson.Controls.Add(this.textBox_Person_Phone);
             this.groupBoxPerson.Controls.Add(this.textBox_Person_Name);
             this.groupBoxPerson.Controls.Add(this.textBox_Person_ID);
-            this.groupBoxPerson.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxPerson.Location = new System.Drawing.Point(866, 62);
             this.groupBoxPerson.Name = "groupBoxPerson";
-            this.groupBoxPerson.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxPerson.Size = new System.Drawing.Size(422, 334);
             this.groupBoxPerson.TabIndex = 12;
             this.groupBoxPerson.TabStop = false;
             this.groupBoxPerson.Text = "Person";
@@ -683,7 +785,7 @@
             // 
             // buttonSaveChanges
             // 
-            this.buttonSaveChanges.Location = new System.Drawing.Point(866, 395);
+            this.buttonSaveChanges.Location = new System.Drawing.Point(866, 421);
             this.buttonSaveChanges.Name = "buttonSaveChanges";
             this.buttonSaveChanges.Size = new System.Drawing.Size(422, 52);
             this.buttonSaveChanges.TabIndex = 4;
@@ -693,38 +795,27 @@
             // 
             // textBoxSearch
             // 
-            this.textBoxSearch.Location = new System.Drawing.Point(618, 41);
+            this.textBoxSearch.Location = new System.Drawing.Point(622, 41);
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(182, 31);
             this.textBoxSearch.TabIndex = 5;
             // 
             // groupBoxPublication
             // 
-            this.groupBoxPublication.Controls.Add(this.label10);
             this.groupBoxPublication.Controls.Add(this.label11);
             this.groupBoxPublication.Controls.Add(this.label31);
             this.groupBoxPublication.Controls.Add(this.label12);
             this.groupBoxPublication.Controls.Add(this.comboBox_Publication_Type);
             this.groupBoxPublication.Controls.Add(this.label13);
-            this.groupBoxPublication.Controls.Add(this.textBox_Publication_PrintingCount);
             this.groupBoxPublication.Controls.Add(this.textBox_Publication_Size);
             this.groupBoxPublication.Controls.Add(this.textBox_Publication_Name);
             this.groupBoxPublication.Controls.Add(this.textBox_Publication_ID);
-            this.groupBoxPublication.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxPublication.Location = new System.Drawing.Point(866, 62);
             this.groupBoxPublication.Name = "groupBoxPublication";
-            this.groupBoxPublication.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxPublication.Size = new System.Drawing.Size(422, 334);
             this.groupBoxPublication.TabIndex = 11;
             this.groupBoxPublication.TabStop = false;
             this.groupBoxPublication.Text = "Publication";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(29, 181);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(155, 23);
-            this.label10.TabIndex = 8;
-            this.label10.Text = "Printing count";
             // 
             // label11
             // 
@@ -771,15 +862,6 @@
             this.label13.Size = new System.Drawing.Size(181, 23);
             this.label13.TabIndex = 8;
             this.label13.Text = "Publication Type";
-            // 
-            // textBox_Publication_PrintingCount
-            // 
-            this.textBox_Publication_PrintingCount.Location = new System.Drawing.Point(241, 178);
-            this.textBox_Publication_PrintingCount.Name = "textBox_Publication_PrintingCount";
-            this.textBox_Publication_PrintingCount.Size = new System.Drawing.Size(159, 31);
-            this.textBox_Publication_PrintingCount.TabIndex = 7;
-            this.textBox_Publication_PrintingCount.TextChanged += new System.EventHandler(this.ValueChanged);
-            this.textBox_Publication_PrintingCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_OnlyNumber_KeyPress);
             // 
             // textBox_Publication_Size
             // 
@@ -884,9 +966,9 @@
             this.groupBoxLogin.Controls.Add(this.label32);
             this.groupBoxLogin.Controls.Add(this.label9);
             this.groupBoxLogin.Controls.Add(this.label14);
-            this.groupBoxLogin.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxLogin.Location = new System.Drawing.Point(866, 62);
             this.groupBoxLogin.Name = "groupBoxLogin";
-            this.groupBoxLogin.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxLogin.Size = new System.Drawing.Size(422, 334);
             this.groupBoxLogin.TabIndex = 3;
             this.groupBoxLogin.TabStop = false;
             this.groupBoxLogin.Text = "Login";
@@ -948,9 +1030,9 @@
             // 
             this.groupBoxPublicationType.Controls.Add(this.textBoxPublicationType);
             this.groupBoxPublicationType.Controls.Add(this.label23);
-            this.groupBoxPublicationType.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxPublicationType.Location = new System.Drawing.Point(866, 62);
             this.groupBoxPublicationType.Name = "groupBoxPublicationType";
-            this.groupBoxPublicationType.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxPublicationType.Size = new System.Drawing.Size(422, 334);
             this.groupBoxPublicationType.TabIndex = 3;
             this.groupBoxPublicationType.TabStop = false;
             this.groupBoxPublicationType.Text = "Publication Type";
@@ -978,9 +1060,9 @@
             this.groupBoxAuthorship.Controls.Add(this.comboBox_Authorship_IDAuthor);
             this.groupBoxAuthorship.Controls.Add(this.label19);
             this.groupBoxAuthorship.Controls.Add(this.label25);
-            this.groupBoxAuthorship.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxAuthorship.Location = new System.Drawing.Point(866, 62);
             this.groupBoxAuthorship.Name = "groupBoxAuthorship";
-            this.groupBoxAuthorship.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxAuthorship.Size = new System.Drawing.Size(422, 334);
             this.groupBoxAuthorship.TabIndex = 12;
             this.groupBoxAuthorship.TabStop = false;
             this.groupBoxAuthorship.Text = "Authorship";
@@ -1031,9 +1113,9 @@
             this.groupBoxRepresentative.Controls.Add(this.label30);
             this.groupBoxRepresentative.Controls.Add(this.label28);
             this.groupBoxRepresentative.Controls.Add(this.label29);
-            this.groupBoxRepresentative.Location = new System.Drawing.Point(866, 78);
+            this.groupBoxRepresentative.Location = new System.Drawing.Point(866, 62);
             this.groupBoxRepresentative.Name = "groupBoxRepresentative";
-            this.groupBoxRepresentative.Size = new System.Drawing.Size(422, 305);
+            this.groupBoxRepresentative.Size = new System.Drawing.Size(422, 334);
             this.groupBoxRepresentative.TabIndex = 12;
             this.groupBoxRepresentative.TabStop = false;
             this.groupBoxRepresentative.Text = "Representative";
@@ -1100,7 +1182,7 @@
             // 
             // buttonAddNew
             // 
-            this.buttonAddNew.Location = new System.Drawing.Point(866, 511);
+            this.buttonAddNew.Location = new System.Drawing.Point(866, 537);
             this.buttonAddNew.Name = "buttonAddNew";
             this.buttonAddNew.Size = new System.Drawing.Size(422, 52);
             this.buttonAddNew.TabIndex = 13;
@@ -1110,7 +1192,7 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(866, 453);
+            this.buttonDelete.Location = new System.Drawing.Point(866, 479);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(422, 52);
             this.buttonDelete.TabIndex = 14;
@@ -1120,47 +1202,14 @@
             // 
             // buttonSearch
             // 
-            this.buttonSearch.Location = new System.Drawing.Point(806, 41);
+            this.buttonSearch.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSearch.BackgroundImage")));
+            this.buttonSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonSearch.Location = new System.Drawing.Point(810, 41);
             this.buttonSearch.Name = "buttonSearch";
-            this.buttonSearch.Size = new System.Drawing.Size(37, 31);
+            this.buttonSearch.Size = new System.Drawing.Size(33, 31);
             this.buttonSearch.TabIndex = 15;
             this.buttonSearch.UseVisualStyleBackColor = true;
             this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
-            // 
-            // statisticsToolStripMenuItem
-            // 
-            this.statisticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.orderStatistics_mmi,
-            this.publicationStatistics_mmi,
-            this.authorshipStatistics_mmi,
-            this.representativeStatistics_mmi});
-            this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
-            this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(117, 27);
-            this.statisticsToolStripMenuItem.Text = "Statistics";
-            // 
-            // orderStatistics_mmi
-            // 
-            this.orderStatistics_mmi.Name = "orderStatistics_mmi";
-            this.orderStatistics_mmi.Size = new System.Drawing.Size(266, 28);
-            this.orderStatistics_mmi.Text = "Publishing Order";
-            // 
-            // publicationStatistics_mmi
-            // 
-            this.publicationStatistics_mmi.Name = "publicationStatistics_mmi";
-            this.publicationStatistics_mmi.Size = new System.Drawing.Size(266, 28);
-            this.publicationStatistics_mmi.Text = "Publication";
-            // 
-            // authorshipStatistics_mmi
-            // 
-            this.authorshipStatistics_mmi.Name = "authorshipStatistics_mmi";
-            this.authorshipStatistics_mmi.Size = new System.Drawing.Size(266, 28);
-            this.authorshipStatistics_mmi.Text = "Authorship";
-            // 
-            // representativeStatistics_mmi
-            // 
-            this.representativeStatistics_mmi.Name = "representativeStatistics_mmi";
-            this.representativeStatistics_mmi.Size = new System.Drawing.Size(266, 28);
-            this.representativeStatistics_mmi.Text = "Representative";
             // 
             // MainForm
             // 
@@ -1171,10 +1220,10 @@
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonAddNew);
             this.Controls.Add(this.groupBoxEntity);
+            this.Controls.Add(this.groupBoxOrder);
             this.Controls.Add(this.groupBoxAuthor);
             this.Controls.Add(this.groupBoxPrintingHouse);
             this.Controls.Add(this.groupBoxPerson);
-            this.Controls.Add(this.groupBoxOrder);
             this.Controls.Add(this.groupBoxPublicationType);
             this.Controls.Add(this.groupBoxLogin);
             this.Controls.Add(this.groupBoxRepresentative);
@@ -1197,7 +1246,7 @@
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "w";
+            this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1256,7 +1305,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox comboBox_Publication_Type;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox textBox_Publication_PrintingCount;
+        private System.Windows.Forms.TextBox textBox_Order_PrintingCount;
         private System.Windows.Forms.TextBox textBox_Publication_Size;
         private System.Windows.Forms.TextBox textBox_Publication_ID;
         private System.Windows.Forms.GroupBox groupBoxPerson;
@@ -1336,6 +1385,10 @@
         private System.Windows.Forms.ToolStripMenuItem publicationStatistics_mmi;
         private System.Windows.Forms.ToolStripMenuItem authorshipStatistics_mmi;
         private System.Windows.Forms.ToolStripMenuItem representativeStatistics_mmi;
+        private System.Windows.Forms.ToolStripMenuItem authorsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem publishingHousesToolStripMenuItem;
+        private System.Windows.Forms.Button buttonClearDateComp;
+        private System.Windows.Forms.Button buttonClearDateOrder;
     }
 }
 

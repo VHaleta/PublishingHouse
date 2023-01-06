@@ -2,6 +2,7 @@
 using PublishingHouse.Helpers;
 using PublishingHouse.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -35,22 +36,19 @@ namespace PublishingHouse
                 SqlCommand command;
                 SqlDataReader rdr;
 
-                if (Session.IDph == 0)
-                {
-                    query = "select * from Login";
-                    command = new SqlCommand(query, connection);
-                    rdr = command.ExecuteReader();
-                    if (rdr.HasRows)
-                        while (rdr.Read())
-                        {
-                            Login login = new Login();
-                            login.Id = (!String.IsNullOrEmpty(rdr[Login.Id_].ToString())) ? int.Parse(rdr[Login.Id_].ToString()) : 0;
-                            login.Username = (!String.IsNullOrEmpty(rdr[Login.Username_].ToString())) ? rdr[Login.Username_].ToString() : null;
-                            login.Password = (!String.IsNullOrEmpty(rdr[Login.Password_].ToString())) ? rdr[Login.Password_].ToString() : null;
-                            logins.Add(login);
-                        }
-                    rdr.Close();
-                }
+                query = "select * from Login";
+                command = new SqlCommand(query, connection);
+                rdr = command.ExecuteReader();
+                if (rdr.HasRows)
+                    while (rdr.Read())
+                    {
+                        Login login = new Login();
+                        login.Id = (!String.IsNullOrEmpty(rdr[Login.Id_].ToString())) ? int.Parse(rdr[Login.Id_].ToString()) : 0;
+                        login.Username = (!String.IsNullOrEmpty(rdr[Login.Username_].ToString())) ? rdr[Login.Username_].ToString() : null;
+                        login.Password = (!String.IsNullOrEmpty(rdr[Login.Password_].ToString())) ? rdr[Login.Password_].ToString() : null;
+                        logins.Add(login);
+                    }
+                rdr.Close();
 
                 query = "select * from Person";
                 command = new SqlCommand(query, connection);
@@ -78,7 +76,6 @@ namespace PublishingHouse
                         publication.Name = (!String.IsNullOrEmpty(rdr[Publication.Name_].ToString())) ? rdr[Publication.Name_].ToString() : null;
                         publication.Type = (!String.IsNullOrEmpty(rdr[Publication.Type_].ToString())) ? rdr[Publication.Type_].ToString() : null;
                         publication.Size = (!String.IsNullOrEmpty(rdr[Publication.Size_].ToString())) ? int.Parse(rdr[Publication.Size_].ToString()) : 0;
-                        publication.PrintingCount = (!String.IsNullOrEmpty(rdr[Publication.PrintingCount_].ToString())) ? int.Parse(rdr[Publication.PrintingCount_].ToString()) : 0;
                         publications.Add(publication);
                     }
                 rdr.Close();
@@ -162,6 +159,7 @@ namespace PublishingHouse
                         publishingOrder.DateOrder = (!String.IsNullOrEmpty(rdr[PublishingOrder.DateOrder_].ToString())) ? DateTime.Parse(rdr[PublishingOrder.DateOrder_].ToString()) : new DateTime();
                         publishingOrder.DateCompliting = (!String.IsNullOrEmpty(rdr[PublishingOrder.DateCompliting_].ToString())) ? DateTime.Parse(rdr[PublishingOrder.DateCompliting_].ToString()) : new DateTime();
                         publishingOrder.Status = (!String.IsNullOrEmpty(rdr[PublishingOrder.OrderStatus_].ToString())) ? OrderStatusHelper.StringToEnum(rdr[PublishingOrder.OrderStatus_].ToString()) : OrderStatus.Unknown;
+                        publishingOrder.PrintingCount = (!String.IsNullOrEmpty(rdr[PublishingOrder.PrintingCount_].ToString())) ? int.Parse(rdr[PublishingOrder.PrintingCount_].ToString()) : 0;
                         publishingOrders.Add(publishingOrder);
                     }
                 rdr.Close();
@@ -239,16 +237,14 @@ namespace PublishingHouse
                         $"SET {Publication.Id_} = {Converter.IntToString(t.Id)}, " +
                         $"{Publication.Name_} = {Converter.StringToDatabase(t.Name)}, " +
                         $"{Publication.Type_} = {Converter.StringToDatabase(t.Type)}, " +
-                        $"{Publication.Size_} = {Converter.IntToString(t.Size)}, " +
-                        $"{Publication.PrintingCount_} = {Converter.IntToString(t.PrintingCount)} " +
+                        $"{Publication.Size_} = {Converter.IntToString(t.Size)} " +
                         $"WHERE {Publication.Id_} = {Converter.IntToString(publications[index].Id)}");
                     else
-                        DoCommand($"INSERT INTO Publication ({Publication.Id_}, {Publication.Name_}, {Publication.Type_}, {Publication.Size_}, {Publication.PrintingCount_}) " +
+                        DoCommand($"INSERT INTO Publication ({Publication.Id_}, {Publication.Name_}, {Publication.Type_}, {Publication.Size_}) " +
                         $"VALUES ({Converter.IntToString(t.Id)}, " +
                         $"{Converter.StringToDatabase(t.Name)}, " +
                         $"{Converter.StringToDatabase(t.Type)}, " +
-                        $"{Converter.IntToString(t.Size)}, " +
-                        $"{Converter.IntToString(t.PrintingCount)})");
+                        $"{Converter.IntToString(t.Size)})");
                     publications[index] = t;
                     return true;
                 }
@@ -354,17 +350,19 @@ namespace PublishingHouse
                         $"{PublishingOrder.IdRepresentative_} = {Converter.IntToString(t.IdRepresentative)}, " +
                         $"{PublishingOrder.DateOrder_} = {Converter.DateTimeToDatabase(t.DateOrder)}, " +
                         $"{PublishingOrder.DateCompliting_} = {Converter.DateTimeToDatabase(t.DateCompliting)}, " +
-                        $"{PublishingOrder.OrderStatus_} = {Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))} " +
+                        $"{PublishingOrder.OrderStatus_} = {Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))}, " +
+                        $"{PublishingOrder.PrintingCount_} = {Converter.IntToString(t.PrintingCount)} " +
                         $"WHERE {PublishingOrder.Id_} = {Converter.IntToString(publishingOrders[index].Id)}");
                     else
-                        DoCommand($"INSERT INTO PublishingOrder ({PublishingOrder.Id_}, {PublishingOrder.IdPublication_}, {PublishingOrder.IdPrintingHouse_}, {PublishingOrder.IdRepresentative_}, {PublishingOrder.DateOrder_}, {PublishingOrder.DateCompliting_}, {PublishingOrder.OrderStatus_}) " +
+                        DoCommand($"INSERT INTO PublishingOrder ({PublishingOrder.Id_}, {PublishingOrder.IdPublication_}, {PublishingOrder.IdPrintingHouse_}, {PublishingOrder.IdRepresentative_}, {PublishingOrder.DateOrder_}, {PublishingOrder.DateCompliting_}, {PublishingOrder.OrderStatus_}, {PublishingOrder.PrintingCount_}) " +
                         $"VALUES ({Converter.IntToString(t.Id)}, " +
                         $"{Converter.IntToString(t.IdPublication)}, " +
                         $"{Converter.IntToString(t.IdPrintingHouse)}, " +
                         $"{Converter.IntToString(t.IdRepresentative)}, " +
                         $"{Converter.DateTimeToDatabase(t.DateOrder)}, " +
                         $"{Converter.DateTimeToDatabase(t.DateCompliting)}, " +
-                        $"{Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))}) ");
+                        $"{Converter.StringToDatabase(OrderStatusHelper.EnumToString(t.Status))}, " +
+                        $"{Converter.IntToString(t.PrintingCount)})");
                     publishingOrders[index] = t;
                     return true;
                 }
@@ -483,7 +481,7 @@ namespace PublishingHouse
                 }
                 return false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
                 return false;
@@ -501,6 +499,41 @@ namespace PublishingHouse
             SqlCommand command = new SqlCommand(query, connection);
             SqlDataReader rdr = command.ExecuteReader();
             bool result = rdr.HasRows;
+            rdr.Close();
+            return result;
+        }
+
+        public static Dictionary<string, int> GetAuthorStatistics()
+        {
+            Dictionary<string, int> result = new Dictionary<string, int>();
+            SqlCommand command = new SqlCommand("select Person.NamePerson, SUM(PrintingCount) as summ\r\n" +
+                "from PublishingOrder, Publication, Authorship, Author, Person\r\n" +
+                "where PublishingOrder.ID_Publication = Publication.ID_Publication and Publication.ID_Publication = Authorship.ID_Publication and \r\n" +
+                "Authorship.ID_Author = Author.ID_Author and Author.ID_Author = Person.ID_Person\r\n" +
+                "group by Person.NamePerson", connection);
+            SqlDataReader rdr = command.ExecuteReader();
+            if (rdr.HasRows)
+                while (rdr.Read())
+                {
+                    result.Add(rdr[Person.Name_].ToString(), int.Parse(rdr["summ"].ToString()));
+                }
+            rdr.Close();
+            return result;
+        }
+
+        public static Dictionary<string, int> GetPrintingHouseStatistics()
+        {
+            Dictionary<string, int> result = new Dictionary<string, int>();
+            SqlCommand command = new SqlCommand("select PrintingHouse.NamePrintingHouse, COUNT(*) as cou\r\n" +
+                "from PrintingHouse, PublishingOrder\r\n" +
+                "where PrintingHouse.ID_PrintingHouse = PublishingOrder.ID_PrintingHouse\r\n" +
+                "group by PrintingHouse.NamePrintingHouse", connection);
+            SqlDataReader rdr = command.ExecuteReader();
+            if (rdr.HasRows)
+                while (rdr.Read())
+                {
+                    result.Add(rdr[PrintingHouse.Name_].ToString(), int.Parse(rdr["cou"].ToString()));
+                }
             rdr.Close();
             return result;
         }
